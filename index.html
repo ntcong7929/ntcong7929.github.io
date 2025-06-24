@@ -69,12 +69,7 @@
     <script>
         function copySetupCode() {
             const setupCode = `
-pkg update && pkg upgrade
-pkg install python
-pkg install git
-git clone https://github.com/username/repo
-cd repo
-python tool.py
+termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python && pip install cryptography requests colorama
             `;
             navigator.clipboard.writeText(setupCode.trim()).then(function() {
                 alert("✅ Đã copy Code Setup!");
