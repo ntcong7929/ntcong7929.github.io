@@ -69,7 +69,7 @@
     <script>
         function copySetupCode() {
             const setupCode = `
-termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python && pip install cryptography requests colorama
+termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust && pip install cryptography requests colorama
             `;
             navigator.clipboard.writeText(setupCode.trim()).then(function() {
                 alert("✅ Đã copy Code Setup!");
