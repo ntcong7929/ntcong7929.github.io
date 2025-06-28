@@ -69,7 +69,7 @@
     <script>
         function copySetupCode() {
             const setupCode = `
-termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install --upgrade pip && pip install requests colorama bs4 cryptography faker
+termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install requests colorama bs4 cryptography faker --break-system-packages
             `;
             navigator.clipboard.writeText(setupCode.trim()).then(function() {
                 alert("✅ Đã copy Code Setup!");
