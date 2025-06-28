@@ -67,13 +67,24 @@
         }
     </style>
     <script>
-        function copySetupCode() {
+        function copySetupCodeTermux() {
             const setupCode = `
 termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install requests colorama bs4 cryptography faker --break-system-packages
             `;
-            navigator.clipboard.writeText(setupCode.trim()).then(function() {
-                alert("✅ Đã copy Code Setup!");
-            }, function(err) {
+            navigator.clipboard.writeText(setupCode.trim()).then(function () {
+                alert("✅ Đã copy Code Setup trên Termux!");
+            }, function (err) {
+                alert("❌ Lỗi copy: " + err);
+            });
+        }
+
+        function copySetupCodeWindows() {
+            const setupCodeWin = `
+pip install requests beautifulsoup4 lxml statistics faker colorama
+            `;
+            navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
+                alert("✅ Đã copy Code Setup trên Windows!");
+            }, function (err) {
                 alert("❌ Lỗi copy: " + err);
             });
         }
@@ -81,27 +92,32 @@ termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python
 </head>
 <body>
 
-    <h1>🛠️ Thông tin 🛠️</h1>
+<h1>🛠️ Thông tin 🛠️</h1>
 
-    <div class="box">
-        <h2>🔧 Code Setup</h2>
-        <button onclick="copySetupCode()">Copy Code</button>
-    </div>
+<div class="box">
+    <h2>🔧 Code Setup trên Termux</h2>
+    <button onclick="copySetupCodeTermux()">Copy Code</button>
+</div>
 
-    <div class="box">
-        <h2>📱 Link Termux</h2>
-        <a href="https://www.mediafire.com/file/fh7llr6i7wlz0s3/Termux_0.119.0-beta.2.apk/file" target="_blank">Link tải Termux</a>
-    </div>
+<div class="box">
+    <h2>💻 Code Setup trên Windows</h2>
+    <button onclick="copySetupCodeWindows()">Copy Code</button>
+</div>
 
-    <div class="box">
-        <h2>🛠️ Link Tool</h2>
-        <a href="https://www.mediafire.com/file/7bpz1wj4pz5lsiz/main.py/file" target="_blank">Tới Tool</a>
-    </div>
+<div class="box">
+    <h2>📱 Link Termux</h2>
+    <a href="https://www.mediafire.com/file/fh7llr6i7wlz0s3/Termux_0.119.0-beta.2.apk/file" target="_blank">Link tải Termux</a>
+</div>
 
-    <div class="footer">
-        <p>Admin: <b>Thành Công</b></p>
-        <p>YouTube: <a href="https://www.youtube.com/@Tool-Xworld" target="_blank">https://www.youtube.com/@Tool-Xworld</a></p>
-    </div>
+<div class="box">
+    <h2>🛠️ Link Tool</h2>
+    <a href="https://www.mediafire.com/file/7bpz1wj4pz5lsiz/main.py/file" target="_blank">Tới Tool</a>
+</div>
+
+<div class="footer">
+    <p>Admin: <b>Thành Công</b></p>
+    <p>YouTube: <a href="https://www.youtube.com/@Tool-Xworld" target="_blank">https://www.youtube.com/@Tool-Xworld</a></p>
+</div>
 
 </body>
 </html>
