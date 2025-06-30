@@ -65,12 +65,27 @@
             text-decoration: none;
             font-weight: bold;
         }
+        .top-left-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 12px 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.6;
+            z-index: 9999;
+        }
+        .top-left-info a {
+            color: #4ecca3;
+            text-decoration: none;
+            display: block;
+        }
     </style>
     <script>
         function copySetupCodeTermux() {
-            const setupCode = `
-termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install requests colorama bs4 cryptography faker --break-system-packages
-            `;
+            const setupCode = `termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install requests colorama bs4 cryptography faker --break-system-packages`;
             navigator.clipboard.writeText(setupCode.trim()).then(function () {
                 alert("✅ Đã copy Code Setup trên Termux!");
             }, function (err) {
@@ -79,9 +94,7 @@ termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python
         }
 
         function copySetupCodeWindows() {
-            const setupCodeWin = `
-pip install requests beautifulsoup4 lxml statistics faker colorama
-            `;
+            const setupCodeWin = `pip install requests beautifulsoup4 lxml statistics faker colorama`;
             navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
                 alert("✅ Đã copy Code Setup trên Windows!");
             }, function (err) {
@@ -91,6 +104,14 @@ pip install requests beautifulsoup4 lxml statistics faker colorama
     </script>
 </head>
 <body>
+
+<!-- Thông tin góc trái trên -->
+<div class="top-left-info">
+    <strong>Người tạo:</strong> Thành Công<br>
+    <a href="https://www.tiktok.com/@cng1237929" target="_blank">Kênh TikTok</a>
+    <a href="https://www.youtube.com/@Tool-Xworld" target="_blank">Kênh YouTube</a>
+    <a href="https://t.me/+RL_zVyZjvx1hZjc1" target="_blank">Nhóm Telegram</a>
+</div>
 
 <h1>🛠️ Thông tin 🛠️</h1>
 
