@@ -85,7 +85,8 @@
     </style>
     <script>
         function copySetupCodeTermux() {
-            const setupCode = `termux-setup-storage && pkg update -y && pkg upgrade -y && pkg install -y python rust clang libffi libxml2 libxslt openssl git && pip install requests colorama bs4 cryptography faker --break-system-packages`;
+            const setupCode = `pkg update -y && pkg upgrade -y && pkg install -y python git curl wget openssl libffi clang && pip install --upgrade pip && pip install requests colorama bs4 pystyle faker pysocks && termux-setup-storage
+`;
             navigator.clipboard.writeText(setupCode.trim()).then(function () {
                 alert("✅ Đã copy Code Setup trên Termux!");
             }, function (err) {
@@ -94,7 +95,7 @@
         }
 
         function copySetupCodeWindows() {
-            const setupCodeWin = `pip install requests beautifulsoup4 lxml statistics faker colorama`;
+            const setupCodeWin = `python -m pip install --upgrade pip && pip install requests colorama bs4 pystyle faker pysocks`;
             navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
                 alert("✅ Đã copy Code Setup trên Windows!");
             }, function (err) {
