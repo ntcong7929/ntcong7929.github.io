@@ -83,26 +83,6 @@
             display: block;
         }
     </style>
-    <script>
-        function copySetupCodeTermux() {
-            const setupCode = `pkg update -y && pkg upgrade -y && termux-setup-storage && sleep 2 && pkg install python python-pip git wget curl openssl-tool clang proot libffi -y && pip install --upgrade pip && pip install requests beautifulsoup4 colorama faker pystyle && echo -e "\n\033[1;32m✅ Cài đặt hoàn tất! Bạn đã sẵn sàng chạy tool Python trên Termux.\033[0m"
-`;
-            navigator.clipboard.writeText(setupCode.trim()).then(function () {
-                alert("✅ Đã copy Code Setup trên Termux!");
-            }, function (err) {
-                alert("❌ Lỗi copy: " + err);
-            });
-        }
-
-        function copySetupCodeWindows() {
-            const setupCodeWin = `python -m pip install --upgrade pip && pip install requests colorama bs4 pystyle faker pysocks`;
-            navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
-                alert("✅ Đã copy Code Setup trên Windows!");
-            }, function (err) {
-                alert("❌ Lỗi copy: " + err);
-            });
-        }
-    </script>
 </head>
 <body>
 
@@ -140,6 +120,27 @@
     <p>Admin: <b>Thành Công</b></p>
     <p>YouTube: <a href="https://www.youtube.com/@Tool-Xworld" target="_blank">https://www.youtube.com/@Tool-Xworld</a></p>
 </div>
+
+<!-- Script để copy code (đặt ở cuối để chắc chắn DOM đã load xong) -->
+<script>
+    function copySetupCodeTermux() {
+        const setupCode = `pkg update -y && pkg upgrade -y && termux-setup-storage && sleep 2 && pkg install python python-pip git wget curl openssl-tool clang proot libffi -y && pip install --upgrade pip && pip install requests beautifulsoup4 colorama faker pystyle && echo -e "\\n\\033[1;32m✅ Cài đặt hoàn tất! Bạn đã sẵn sàng chạy tool Python trên Termux.\\033[0m"`;
+        navigator.clipboard.writeText(setupCode.trim()).then(function () {
+            alert("✅ Đã copy Code Setup trên Termux!");
+        }, function (err) {
+            alert("❌ Lỗi copy: " + err);
+        });
+    }
+
+    function copySetupCodeWindows() {
+        const setupCodeWin = `python -m pip install --upgrade pip && pip install requests colorama bs4 pystyle faker pysocks`;
+        navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
+            alert("✅ Đã copy Code Setup trên Windows!");
+        }, function (err) {
+            alert("❌ Lỗi copy: " + err);
+        });
+    }
+</script>
 
 </body>
 </html>
