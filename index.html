@@ -124,7 +124,7 @@
 <!-- Script để copy code (đặt ở cuối để chắc chắn DOM đã load xong) -->
 <script>
     function copySetupCodeTermux() {
-        const setupCode = `pkg update -y && pkg upgrade -y && termux-setup-storage && sleep 2 && pkg install python python-pip git wget curl openssl-tool clang proot libffi -y && pip install --upgrade pip && pip install requests beautifulsoup4 colorama faker pystyle && echo -e "\\n\\033[1;32m✅ Cài đặt hoàn tất! Bạn đã sẵn sàng chạy tool Python trên Termux.\\033[0m"`;
+        const setupCode = `termux-setup-storage && pkg update && pkg upgrade && pkg install python git wget curl openssl-tool clang proot libffi && pip install requests bs4`;
         navigator.clipboard.writeText(setupCode.trim()).then(function () {
             alert("✅ Đã copy Code Setup trên Termux!");
         }, function (err) {
