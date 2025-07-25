@@ -133,7 +133,7 @@
     }
 
     function copySetupCodeWindows() {
-        const setupCodeWin = `python -m pip install --upgrade pip && pip install requests colorama bs4 pystyle faker pysocks`;
+        const setupCodeWin = `python -m pip install --upgrade pip && pip install requests colorama psutil`;
         navigator.clipboard.writeText(setupCodeWin.trim()).then(function () {
             alert("✅ Đã copy Code Setup trên Windows!");
         }, function (err) {
