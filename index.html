@@ -124,7 +124,7 @@
 
 <script>
     function copySetupCodeTermux() {
-        const setupCode = `termux-setup-storage && pkg update && pkg upgrade && pkg install python git wget curl openssl-tool clang proot libffi && pip install requests bs4 colorama psutil`;
+        const setupCode = `termux-setup-storage && pkg update && pkg upgrade && pkg install python git wget curl openssl-tool clang proot libffi && pip install requests bs4 colorama`;
         navigator.clipboard.writeText(setupCode.trim()).then(function () {
             alert("✅ Đã copy Code Setup trên Termux!");
         }, function (err) {
