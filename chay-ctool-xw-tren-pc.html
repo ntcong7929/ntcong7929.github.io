@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn cài đặt và sử dụng CTOOL XWORLD trên PC</title>
+    <!-- Thư viện Tailwind CSS để tạo giao diện đẹp mắt và responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .code-block {
+            background-color: #1f2937;
+            color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            position: relative;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4b5563;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-2xl">
+
+        <!-- Tiêu đề trang -->
+        <h1 class="text-center text-2xl sm:text-3xl font-bold text-gray-800 mb-8">
+            Hướng dẫn cài đặt và sử dụng CTOOL XWORLD trên PC
+        </h1>
+
+        <!-- Giới thiệu -->
+        <div class="mb-8">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                1. Giới thiệu
+            </h2>
+            <p class="text-gray-600 leading-relaxed">
+                Chào mừng bạn đến với hướng dẫn chi tiết về cách thiết lập và chạy tool CTOOL XWORLD trên máy tính cá nhân sử dụng Python 3.12 và Command Prompt (CMD). Hướng dẫn này sẽ giúp bạn dễ dàng cài đặt và sử dụng tool trên máy tính của mình.
+            </p>
+        </div>
+
+        <!-- Yêu cầu -->
+        <div class="mb-8">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                2. Yêu cầu và cài đặt Python
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                Để chạy tool, bạn cần cài đặt **Python 3.12** trên PC của mình. Nếu bạn chưa có, hãy tải về từ trang web chính thức:
+                <a href="https://www.python.org/downloads/release/python-3120/" target="_blank" class="text-blue-500 hover:underline font-medium">Tải Python 3.12 tại đây</a>
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+                Khi cài đặt, hãy đảm bảo bạn tích chọn vào ô **"Add python.exe to PATH"** để có thể chạy lệnh Python từ mọi vị trí trong CMD.
+            </p>
+        </div>
+
+        <!-- Các bước cài đặt -->
+        <div class="mb-8">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                3. Cài đặt các thư viện cần thiết
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                Mở Command Prompt (CMD) trên máy tính của bạn và nhập lệnh sau.
+                Bạn có thể tìm kiếm "cmd" trong menu Start.
+            </p>
+            <div class="code-block mt-2">
+                <pre id="code1">pip install requests bs4 colorama psutil</pre>
+                <button class="copy-button" onclick="copyToClipboard('code1')">Copy</button>
+            </div>
+            <p class="text-sm mt-2 text-gray-600">
+                Lệnh này sẽ tải xuống và cài đặt tất cả các thư viện mà tool yêu cầu.
+            </p>
+        </div>
+
+        <!-- Tải tool -->
+        <div class="mb-8">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                4. Tải tool CTOOL XWORLD
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                Để tải file tool, bạn có thể dùng lệnh `curl` trong CMD. Nếu máy tính của bạn không có `curl`, bạn có thể tải file bằng trình duyệt.
+            </p>
+            <div class="code-block">
+                <pre id="code2">curl -o CTOOL.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/CTOOL.py</pre>
+                <button class="copy-button" onclick="copyToClipboard('code2')">Copy</button>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">
+                Lệnh này sẽ tải file từ GitHub và lưu nó dưới tên là <strong>CTOOL.py</strong>.
+            </p>
+        </div>
+
+        <!-- Hướng dẫn chạy -->
+        <div class="mb-8">
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                5. Cách chạy tool
+            </h2>
+            <p class="text-gray-600 leading-relaxed mb-4">
+                Sau khi tải file thành công, bạn di chuyển đến thư mục chứa file đó trong CMD, sau đó chạy lệnh sau:
+            </p>
+            <div class="code-block">
+                <pre id="code3">python CTOOL.py</pre>
+                <button class="copy-button" onclick="copyToClipboard('code3')">Copy</button>
+            </div>
+            <p class="text-sm text-gray-600 mt-2">
+                Nếu mọi thứ đều đúng, tool sẽ bắt đầu chạy.
+            </p>
+        </div>
+
+        <!-- Lỗi thường gặp và cách khắc phục -->
+        <div>
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700 mb-4">
+                6. Lỗi thường gặp và cách khắc phục
+            </h2>
+            <div class="space-y-6">
+                <!-- Lỗi 1 -->
+                <div class="p-6 bg-red-50 rounded-lg border border-red-200">
+                    <h3 class="text-lg font-bold text-red-700 mb-2">Lỗi 1: 'pip' is not recognized...</h3>
+                    <p class="text-red-600">
+                        Lỗi này xảy ra khi Python hoặc pip chưa được thêm vào biến môi trường hệ thống (PATH).
+                    </p>
+                    <p class="text-sm mt-2 text-red-600">
+                        <strong>Cách khắc phục:</strong> Chạy lại trình cài đặt Python và chọn "Repair". Hoặc bạn có thể chạy lệnh với đường dẫn đầy đủ:
+                    </p>
+                    <div class="code-block mt-2">
+                        <pre id="code4">py -m pip install requests bs4 colorama psutil</pre>
+                        <button class="copy-button" onclick="copyToClipboard('code4')">Copy</button>
+                    </div>
+                </div>
+
+                <!-- Lỗi 2 -->
+                <div class="p-6 bg-red-50 rounded-lg border border-red-200">
+                    <h3 class="text-lg font-bold text-red-700 mb-2">Lỗi 2: No module named 'requests'</h3>
+                    <p class="text-red-600">
+                        Đây là lỗi khi một trong các thư viện cần thiết chưa được cài đặt thành công.
+                    </p>
+                    <div class="code-block mt-2">
+                        <pre id="code5">pip install requests bs4 colorama psutil</pre>
+                        <button class="copy-button" onclick="copyToClipboard('code5')">Copy</button>
+                    </div>
+                    <p class="text-sm mt-2 text-red-600">
+                        <strong>Cách khắc phục:</strong> Chạy lại lệnh cài đặt thư viện ở bước 3.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript để xử lý chức năng copy -->
+    <script>
+        function copyToClipboard(elementId) {
+            const codeBlock = document.getElementById(elementId);
+            const textToCopy = codeBlock.innerText;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = textToCopy;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                alert('Đã sao chép lệnh vào clipboard!');
+            } catch (err) {
+                alert('Không thể sao chép: ' + err);
+            }
+
+            document.body.removeChild(tempInput);
+        }
+    </script>
+
+</body>
+</html>
