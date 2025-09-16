@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CTOOL - Vua Thoát Hiểm Bot v4.0 (Web Edition)</title>
+    <title>CTOOL - Vua Thoát Hiểm Bot v4.1 (Proxy & Debugging)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -427,12 +427,19 @@
         // ==================================================================================================
         // SECTION 1: HẰNG SỐ VÀ CẤU HÌNH
         // ==================================================================================================
-        const API_BASE_URL = "https://api.escapemaster.net";
-        const WALLET_API_URL = "https://wallet.3games.io/api/wallet/user_asset";
+        
+        // ================== START: CODE ĐÃ SỬA ==================
+        // Sử dụng Proxy để tránh lỗi CORS cho các yêu cầu HTTP.
+        // LƯU Ý: Cách này KHÔNG hoạt động cho WebSocket (wss://).
+        const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+
+        const API_BASE_URL = PROXY_URL + encodeURIComponent('https://api.escapemaster.net');
+        const WALLET_API_URL = PROXY_URL + encodeURIComponent('https://wallet.3games.io/api/wallet/user_asset');
+        
+        // WebSocket URL vẫn giữ nguyên vì không thể đi qua proxy này.
         const WEBSOCKET_URL = "wss://api.escapemaster.net/escape_master/ws";
-	const PROXY_URL = 'https://api.allorigins.win/raw?url=';
-	const API_BASE_URL = PROXY_URL + encodeURIComponent('https://api.escapemaster.net');
-	const WALLET_API_URL = PROXY_URL + encodeURIComponent('https://wallet.3games.io/api/wallet/user_asset');
+        // ==================  END: CODE ĐÃ SỬA  ==================
+
         const ROOM_NAMES = {
             1: 'Nhà kho', 2: 'Phòng họp', 3: "Phòng Giám đốc", 4: 'Phòng trò chuyện',
             5: 'Phòng Giám sát', 6: 'Văn phòng', 7: 'Phòng Tài Vụ', 8: 'Phòng Nhân sự'
@@ -542,7 +549,6 @@
             elements.forEach(el => el.disabled = !enable);
             dom.saveConfigBtn.disabled = !enable;
             if (enable) {
-                // Re-enable logic for fixed room
                 onLogicChange();
             }
         }
@@ -611,7 +617,7 @@
                 'cache-control': 'no-cache',
                 'content-type': 'application/json',
                 'country-code': 'vn',
-                'origin': 'https://xworld.info',
+                'origin': 'https://xworld.info', // Vẫn giữ origin này để API server nhận diện
                 'pragma': 'no-cache',
                 'referer': 'https://xworld.info/',
                 'user-id': config.user_id,
@@ -648,7 +654,6 @@
             },
             enter_room: async (roomId, coin) => {
                 const data = { asset_type: coin, user_id: parseInt(getConfig().user_id), room_id: roomId };
-                // Suppress errors for this specific call as it might fail often
                 const response = await makeApiRequest(`${API_BASE_URL}/escape_game/enter_room`, 'POST', data).catch(() => null);
                 return response !== null;
             },
@@ -746,14 +751,17 @@
 
         function playRound(betAmount, statusBet) {
             return new Promise(async (resolve, reject) => {
+                addLog('info', "Đang khởi tạo vòng chơi mới...");
                 const config = getConfig();
                 const ws = new WebSocket(WEBSOCKET_URL);
+                
                 const timeout = setTimeout(() => {
                     ws.close();
                     reject(new Error("WebSocket connection timed out after 30 seconds."));
                 }, 30000);
 
                 ws.onopen = async () => {
+                    addLog('info', "Kết nối WebSocket thành công. Đang gửi thông tin xác thực...");
                     const wsPayload = {
                         msg_type: "handle_enter_game",
                         asset_type: config.Coin,
@@ -763,9 +771,14 @@
                     ws.send(JSON.stringify(wsPayload));
                 };
 
+                // Lấy dữ liệu lịch sử song song với việc kết nối WS
                 const data_10 = await apiService.get_recent_10(config.Coin);
                 const data_100 = await apiService.get_recent_100(config.Coin);
-                if (!data_10 || !data_100) addLog('warning', "Không lấy được dữ liệu lịch sử.");
+                if (data_10 && data_100) {
+                     addLog('info', "Lấy dữ liệu lịch sử thành công.");
+                } else {
+                    addLog('warning', "Không lấy được dữ liệu lịch sử. Bot có thể hoạt động không chính xác.");
+                }
 
                 ws.onmessage = (event) => {
                     const data = JSON.parse(event.data);
@@ -782,6 +795,7 @@
                         
                         updateStatsTable(data);
                         updateStatusBar(`Phòng đã vào: ${data.user_data?.room_id || 'N/A'}`);
+
                     } else if (data.msg_type === 'notify_result') {
                         clearTimeout(timeout);
                         ws.close();
@@ -810,7 +824,14 @@
                 
                 ws.onerror = (error) => {
                     clearTimeout(timeout);
+                    addLog('error', "Lỗi kết nối WebSocket! Server có thể đã chặn kết nối từ nguồn của bạn (GitHub Pages).");
+                    console.error("WebSocket Error:", error);
                     reject(new Error("Lỗi WebSocket."));
+                };
+
+                ws.onclose = (event) => {
+                    clearTimeout(timeout);
+                    addLog('warning', `Kết nối WebSocket đã đóng. Mã: ${event.code}. Lý do: ${event.reason || 'Không rõ'}`);
                 };
             });
         }
@@ -845,13 +866,11 @@
                     if (result) {
                         updateGameState(result);
                     } else if (!statusBet) {
-                        // Vẫn tăng vòng chơi nếu đang trong thời gian nghỉ
                         gameState.total_played++;
                     }
                     
                     updateStatsPanel();
                     
-                    // Chờ 5 giây trước vòng tiếp theo
                     await new Promise(resolve => setTimeout(resolve, 5000));
 
                 } catch (e) {
@@ -861,7 +880,6 @@
                 }
             }
             
-            // Bot finished loop
             botRunning = false;
             stopRequested = false;
             toggleControls(true);
@@ -889,7 +907,7 @@
                 }
                 botRunning = true;
                 stopRequested = false;
-                gameState = resetGameState(); // Reset stats on new start
+                gameState = resetGameState(); 
                 updateStatsPanel();
                 toggleControls(false);
                 dom.startStopBtn.textContent = "Dừng Bot";
@@ -899,7 +917,6 @@
         }
         
         function initializeApp() {
-            // Populate logic select
             Object.entries(LOGIC_DESCRIPTIONS).forEach(([id, desc]) => {
                 const option = document.createElement('option');
                 option.value = id;
@@ -907,15 +924,13 @@
                 dom.logicSelect.appendChild(option);
             });
 
-            // Add event listeners
             dom.saveConfigBtn.addEventListener('click', saveConfig);
             dom.startStopBtn.addEventListener('click', startStopBot);
             dom.logicSelect.addEventListener('change', onLogicChange);
             
-            // Load config and init UI
             loadConfig();
-            updateStatsPanel(); // Init stats panel with 0s
-            addLog('info', 'Chào mừng đến với CTOOL - Vua Thoát Hiểm Bot v4.0!');
+            updateStatsPanel();
+            addLog('info', 'Chào mừng đến với CTOOL - Vua Thoát Hiểm Bot v4.1!');
         }
 
         initializeApp();
