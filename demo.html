@@ -430,7 +430,9 @@
         const API_BASE_URL = "https://api.escapemaster.net";
         const WALLET_API_URL = "https://wallet.3games.io/api/wallet/user_asset";
         const WEBSOCKET_URL = "wss://api.escapemaster.net/escape_master/ws";
-
+	const PROXY_URL = 'https://api.allorigins.win/raw?url=';
+	const API_BASE_URL = PROXY_URL + encodeURIComponent('https://api.escapemaster.net');
+	const WALLET_API_URL = PROXY_URL + encodeURIComponent('https://wallet.3games.io/api/wallet/user_asset');
         const ROOM_NAMES = {
             1: 'Nhà kho', 2: 'Phòng họp', 3: "Phòng Giám đốc", 4: 'Phòng trò chuyện',
             5: 'Phòng Giám sát', 6: 'Văn phòng', 7: 'Phòng Tài Vụ', 8: 'Phòng Nhân sự'
