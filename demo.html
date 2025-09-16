@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CTOOL - Vua Thoát Hiểm Bot v4.0 (Web Edition)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --surface-dark: #1e1e1e;
+            --primary-color: #03a9f4;
+            --primary-variant: #0288d1;
+            --secondary-color: #f44336;
+            --text-light: #e0e0e0;
+            --text-medium: #a0a0a0;
+            --text-dark: #707070;
+            --success-color: #4caf50;
+            --warning-color: #ffc107;
+            --error-color: #f44336;
+            --border-color: #333333;
+            --font-family: 'Roboto', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            font-family: var(--font-family);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            padding: 15px;
+            gap: 15px;
+        }
+
+        .controls-frame, .info-frame {
+            background-color: var(--surface-dark);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .controls-frame {
+            flex: 0 0 380px;
+        }
+
+        .info-frame {
+            flex: 1;
+        }
+        
+        .frame-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-medium);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(3, 169, 244, 0.5);
+        }
+        
+        .form-group input[type="password"] {
+            font-family: text-security-disc;
+            -webkit-text-security: disc;
+        }
+
+        .form-group-inline {
+            display: flex;
+            gap: 10px;
+        }
+        .form-group-inline > div {
+            flex: 1;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-variant);
+        }
+        
+        .btn-secondary {
+            background-color: #4CAF50;
+            color: white;
+            margin-top: auto;
+        }
+        .btn-secondary:hover {
+            background-color: #45a049;
+        }
+        
+        .btn-danger {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        
+        .btn:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        
+        .controls-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        #startStopBtn {
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+
+        .info-panels {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .stats-table-panel, .stats-detail-panel, .log-panel {
+            background-color: #252525;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .stats-table-panel { flex: 2; overflow-y: auto; }
+        .stats-detail-panel { flex: 1.5; }
+        .log-panel { flex: 3; overflow: hidden; }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .stats-table th, .stats-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .stats-table th {
+            font-weight: 500;
+            color: var(--text-medium);
+            font-size: 0.9rem;
+        }
+        .stats-table td {
+            color: var(--text-light);
+        }
+        .stats-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .stats-table tbody tr:hover {
+            background-color: #2c2c2c;
+        }
+        .align-center { text-align: center; }
+        .align-right { text-align: right; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        .stat-item .label { color: var(--text-medium); }
+        .stat-item .value { font-weight: 500; }
+        .stat-item .value.win { color: var(--success-color); }
+        .stat-item .value.loss { color: var(--error-color); }
+        .stat-item .value.profit { color: var(--warning-color); }
+        .stat-item .value.streak { color: var(--primary-color); }
+
+        #loseStreakDetails {
+            grid-column: 1 / -1;
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--text-medium);
+        }
+        
+        .log-box {
+            flex-grow: 1;
+            overflow-y: scroll;
+            padding: 10px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        .log-box p {
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .log-info { color: var(--primary-color); }
+        .log-success { color: var(--success-color); }
+        .log-warning { color: var(--warning-color); }
+        .log-error { color: var(--error-color); }
+        .log-win { color: #81c784; }
+        .log-loss { color: #e57373; }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            font-size: 0.9rem;
+            z-index: 10;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            .controls-frame {
+                flex: 0 0 auto;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+         @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="controls-frame">
+            <h2 class="frame-title">Bảng Điều Khiển</h2>
+            <div id="controlInputs">
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" placeholder="Nhập User ID của bạn">
+                </div>
+                <div class="form-group">
+                    <label for="secretKey">Secret Key</label>
+                    <input type="password" id="secretKey" placeholder="Nhập Secret Key của bạn">
+                </div>
+                <div class="form-group">
+                    <label for="coinType">Loại Coin</label>
+                    <select id="coinType">
+                        <option>BUILD</option>
+                        <option>USDT</option>
+                        <option>WORLD</option>
+                    </select>
+                </div>
+                <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="betAmount">Cược Gốc</label>
+                        <input type="number" id="betAmount" value="0.01" step="0.01" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="trapMultiplier">Hệ số thua</label>
+                        <input type="number" id="trapMultiplier" value="2.1" step="0.1" min="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="logicSelect">Logic</label>
+                    <select id="logicSelect"></select>
+                </div>
+                <div class="form-group">
+                    <label for="fixedRoom">Phòng Cố Định (cho Logic 2)</label>
+                    <select id="fixedRoom" disabled>
+                        <option value="1">1. Nhà kho</option>
+                        <option value="2">2. Phòng họp</option>
+                        <option value="3">3. Phòng Giám đốc</option>
+                        <option value="4">4. Phòng trò chuyện</option>
+                        <option value="5">5. Phòng Giám sát</option>
+                        <option value="6">6. Văn phòng</option>
+                        <option value="7">7. Phòng Tài Vụ</option>
+                        <option value="8">8. Phòng Nhân sự</option>
+                    </select>
+                </div>
+                 <div class="form-group-inline">
+                    <div class="form-group">
+                        <label for="delay1">Nghỉ sau (ván)</label>
+                        <input type="number" id="delay1" value="9999" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="delay2">Thời gian nghỉ</label>
+                        <input type="number" id="delay2" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="controls-footer">
+                <button id="saveConfigBtn" class="btn btn-secondary">Lưu Cấu Hình</button>
+                <button id="startStopBtn" class="btn btn-primary" style="margin-top: 10px;">Bắt Đầu Bot</button>
+            </div>
+        </div>
+
+        <div class="info-frame">
+            <h2 class="frame-title">Thông Tin & Nhật Ký</h2>
+            <div class="info-panels">
+                <div class="stats-table-panel">
+                    <h3 class="panel-title">Trạng Thái Phòng</h3>
+                    <table class="stats-table">
+                        <thead>
+                            <tr>
+                                <th class="align-center">ID</th>
+                                <th>Tên Phòng</th>
+                                <th class="align-center">Số Người</th>
+                                <th class="align-right">Tổng Cược</th>
+                            </tr>
+                        </thead>
+                        <tbody id="statsTableBody">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="stats-detail-panel">
+                    <h3 class="panel-title">Thống Kê Chi Tiết</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="label">Thắng / Thua:</span>
+                            <span class="value" id="winLoseStat">0 / 0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">Chuỗi thắng:</span>
+                            <span class="value streak" id="streakStat">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">Tỷ lệ thắng:</span>
+                            <span class="value win" id="winRateStat">0.00%</span>
+                        </div>
+                         <div class="stat-item">
+                            <span class="label">Thắng dài nhất:</span>
+                            <span class="value streak" id="maxStreakStat">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">Lợi nhuận:</span>
+                            <span class="value profit" id="profitStat">0.0000</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="label">Chuỗi thua:</span>
+                            <span class="value loss" id="loseStreakStat">0</span>
+                        </div>
+                        <div class="stat-item" id="loseStreakDetails">Chưa có chuỗi thua dài</div>
+                    </div>
+                </div>
+                <div class="log-panel">
+                    <h3 class="panel-title">Nhật Ký Hoạt Động</h3>
+                    <div class="log-box" id="logBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="status-bar" id="statusBar">CTOOL Sẵn Sàng</div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // ==================================================================================================
+        // SECTION 1: HẰNG SỐ VÀ CẤU HÌNH
+        // ==================================================================================================
+        const API_BASE_URL = "https://api.escapemaster.net";
+        const WALLET_API_URL = "https://wallet.3games.io/api/wallet/user_asset";
+        const WEBSOCKET_URL = "wss://api.escapemaster.net/escape_master/ws";
+
+        const ROOM_NAMES = {
+            1: 'Nhà kho', 2: 'Phòng họp', 3: "Phòng Giám đốc", 4: 'Phòng trò chuyện',
+            5: 'Phòng Giám sát', 6: 'Văn phòng', 7: 'Phòng Tài Vụ', 8: 'Phòng Nhân sự'
+        };
+
+        const LOGIC_DESCRIPTIONS = {
+            1: "Ngẫu nhiên (chọn 1 trong 8 phòng)",
+            2: "Cố định (luôn vào 1 phòng đã chọn)",
+            3: "Theo phòng cược LỚN NHẤT",
+            4: "Theo phòng cược NHỎ NHẤT",
+            5: "Ngẫu nhiên giữa phòng LỚN NHẤT và NHỎ NHẤT",
+            6: "Ngẫu nhiên giữa 2 phòng LỚN NHẤT và 2 phòng NHỎ NHẤT",
+            7: "Logic V7 (phân tích top 10 & 100)",
+            8: "Tuần tự (đánh theo thứ tự từ 1 đến 8)",
+            9: "Đối xứng (né tầng của sát thủ ván trước)",
+            10: "Phân tích Tổng hợp & Chấm điểm (Logic V10)",
+            11: "Siêu Phân Tích & Né Sát Thủ (Logic V11)",
+            12: "Ngẫu nhiên giữa phòng cược lớn THỨ 2 và 3",
+        };
+
+        // ==================================================================================================
+        // SECTION 2: BIẾN TRẠNG THÁI VÀ DOM ELEMENTS
+        // ==================================================================================================
+        let botRunning = false;
+        let stopRequested = false;
+        let gameState = resetGameState();
+        
+        // DOM Elements
+        const dom = {
+            userId: document.getElementById('userId'),
+            secretKey: document.getElementById('secretKey'),
+            coinType: document.getElementById('coinType'),
+            betAmount: document.getElementById('betAmount'),
+            trapMultiplier: document.getElementById('trapMultiplier'),
+            logicSelect: document.getElementById('logicSelect'),
+            fixedRoom: document.getElementById('fixedRoom'),
+            delay1: document.getElementById('delay1'),
+            delay2: document.getElementById('delay2'),
+            saveConfigBtn: document.getElementById('saveConfigBtn'),
+            startStopBtn: document.getElementById('startStopBtn'),
+            controlInputs: document.getElementById('controlInputs'),
+            statsTableBody: document.getElementById('statsTableBody'),
+            winLoseStat: document.getElementById('winLoseStat'),
+            winRateStat: document.getElementById('winRateStat'),
+            profitStat: document.getElementById('profitStat'),
+            streakStat: document.getElementById('streakStat'),
+            maxStreakStat: document.getElementById('maxStreakStat'),
+            loseStreakStat: document.getElementById('loseStreakStat'),
+            loseStreakDetails: document.getElementById('loseStreakDetails'),
+            logBox: document.getElementById('logBox'),
+            statusBar: document.getElementById('statusBar')
+        };
+
+        // ==================================================================================================
+        // SECTION 3: QUẢN LÝ GIAO DIỆN (UI MANAGER)
+        // ==================================================================================================
+        function addLog(level, message) {
+            const p = document.createElement('p');
+            p.className = `log-${level}`;
+            const timestamp = new Date().toLocaleTimeString('vi-VN');
+            p.textContent = `[${timestamp}] ${message}`;
+            dom.logBox.appendChild(p);
+            dom.logBox.scrollTop = dom.logBox.scrollHeight;
+        }
+
+        function updateStatsTable(data) {
+            dom.statsTableBody.innerHTML = '';
+            const sortedRooms = (data.rooms || []).sort((a, b) => a.room_id - b.room_id);
+            sortedRooms.forEach(room => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="align-center">${room.room_id}</td>
+                    <td>${ROOM_NAMES[room.room_id] || 'N/A'}</td>
+                    <td class="align-center">${room.user_cnt}</td>
+                    <td class="align-right">${room.total_bet_amount.toFixed(2)}</td>
+                `;
+                dom.statsTableBody.appendChild(row);
+            });
+        }
+        
+        function updateStatsPanel() {
+            const { win, lose, earn, streak, max_streak, lose_streak, total_played, lose_streak_counts } = gameState;
+            const coin = getConfig().Coin;
+            
+            const winRate = total_played > 0 ? (win / total_played * 100) : 0;
+
+            dom.winLoseStat.textContent = `${win} / ${lose}`;
+            dom.winRateStat.textContent = `${winRate.toFixed(2)}%`;
+            dom.profitStat.textContent = `${earn.toFixed(4)} ${coin}`;
+            dom.streakStat.textContent = streak;
+            dom.maxStreakStat.textContent = max_streak;
+            dom.loseStreakStat.textContent = lose_streak;
+
+            const details = Object.entries(lose_streak_counts)
+                .filter(([, count]) => count > 0)
+                .map(([length, count]) => `x${length}: ${count} lần`)
+                .join(' | ');
+            dom.loseStreakDetails.textContent = details || "Chưa có chuỗi thua dài";
+        }
+
+        function updateStatusBar(text) {
+            dom.statusBar.textContent = text;
+        }
+
+        function toggleControls(enable) {
+            const elements = dom.controlInputs.querySelectorAll('input, select');
+            elements.forEach(el => el.disabled = !enable);
+            dom.saveConfigBtn.disabled = !enable;
+            if (enable) {
+                // Re-enable logic for fixed room
+                onLogicChange();
+            }
+        }
+
+        function onLogicChange() {
+            const selectedLogicId = parseInt(dom.logicSelect.value, 10);
+            dom.fixedRoom.disabled = (selectedLogicId !== 2);
+        }
+
+        // ==================================================================================================
+        // SECTION 4: QUẢN LÝ CẤU HÌNH (CONFIG MANAGER)
+        // ==================================================================================================
+        function getConfig() {
+            return {
+                user_id: dom.userId.value.trim(),
+                user_secretkey: dom.secretKey.value.trim(),
+                Coin: dom.coinType.value,
+                bet_amount0: parseFloat(dom.betAmount.value) || 0.01,
+                trap: parseFloat(dom.trapMultiplier.value) || 2.1,
+                int_logic: parseInt(dom.logicSelect.value, 10),
+                auto_join: parseInt(dom.fixedRoom.value, 10),
+                delay1: parseInt(dom.delay1.value) || 9999,
+                delay2: parseInt(dom.delay2.value) || 0,
+            };
+        }
+
+        function saveConfig() {
+            const config = getConfig();
+            if (!config.user_id || !config.user_secretkey) {
+                addLog('error', "User ID và Secret Key không được để trống.");
+                alert("User ID và Secret Key không được để trống.");
+                return;
+            }
+            localStorage.setItem('vthBotConfig', JSON.stringify(config));
+            addLog('success', "Lưu cấu hình thành công!");
+        }
+
+        function loadConfig() {
+            const savedConfig = localStorage.getItem('vthBotConfig');
+            if (savedConfig) {
+                const config = JSON.parse(savedConfig);
+                dom.userId.value = config.user_id || '';
+                dom.secretKey.value = config.user_secretkey || '';
+                dom.coinType.value = config.Coin || 'BUILD';
+                dom.betAmount.value = config.bet_amount0 || 0.01;
+                dom.trapMultiplier.value = config.trap || 2.1;
+                dom.logicSelect.value = config.int_logic || 1;
+                dom.fixedRoom.value = config.auto_join || 1;
+                dom.delay1.value = config.delay1 || 9999;
+                dom.delay2.value = config.delay2 || 0;
+                onLogicChange();
+                addLog('info', "Tải cấu hình đã lưu thành công.");
+            } else {
+                 addLog('warning', "Không tìm thấy cấu hình đã lưu.");
+            }
+        }
+        
+        // ==================================================================================================
+        // SECTION 5: DỊCH VỤ API (API SERVICE)
+        // ==================================================================================================
+        async function makeApiRequest(url, method = 'GET', body = null) {
+            const config = getConfig();
+            const headers = {
+                'accept': '*/*',
+                'accept-language': 'vi,en;q=0.9',
+                'cache-control': 'no-cache',
+                'content-type': 'application/json',
+                'country-code': 'vn',
+                'origin': 'https://xworld.info',
+                'pragma': 'no-cache',
+                'referer': 'https://xworld.info/',
+                'user-id': config.user_id,
+                'user-login': 'login_v2',
+                'user-secret-key': config.user_secretkey,
+                'xb-language': 'vi-VN',
+            };
+
+            try {
+                const options = { method, headers };
+                if (body) options.body = JSON.stringify(body);
+                
+                const response = await fetch(url, options);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.code !== 0) {
+                    throw new Error(`API error: ${data.msg || 'Lỗi không xác định'}`);
+                }
+                return data;
+            } catch (error) {
+                addLog('error', `Lỗi API (${url}): ${error.message}`);
+                return null;
+            }
+        }
+        
+        const apiService = {
+            bet: async (roomId, coin, amount) => {
+                const data = { asset_type: coin, user_id: getConfig().user_id, room_id: roomId, bet_amount: amount };
+                const response = await makeApiRequest(`${API_BASE_URL}/escape_game/bet`, 'POST', data);
+                return response !== null;
+            },
+            enter_room: async (roomId, coin) => {
+                const data = { asset_type: coin, user_id: parseInt(getConfig().user_id), room_id: roomId };
+                // Suppress errors for this specific call as it might fail often
+                const response = await makeApiRequest(`${API_BASE_URL}/escape_game/enter_room`, 'POST', data).catch(() => null);
+                return response !== null;
+            },
+            get_recent_10: async (coin) => {
+                 const response = await makeApiRequest(`${API_BASE_URL}/escape_game/recent_10_issues?asset=${coin}`);
+                 if (response && response.data) {
+                    const issues = response.data.map(item => item.issue_id);
+                    const killed_rooms = response.data.map(item => item.killed_room_id);
+                    return [issues, killed_rooms];
+                 }
+                 return null;
+            },
+            get_recent_100: async (coin) => {
+                const response = await makeApiRequest(`${API_BASE_URL}/escape_game/recent_100_issues?asset=${coin}`);
+                return response?.data?.room_id_2_killed_times || null;
+            }
+        };
+
+        // ==================================================================================================
+        // SECTION 6: LOGIC TRÒ CHƠI VÀ BOT
+        // ==================================================================================================
+        function resetGameState() {
+            return {
+                win: 0, lose: 0, earn: 0.0, streak: 0, max_streak: 0,
+                lose_streak: 0, lose_streak_counts: {2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0, 10:0},
+                history: [], total_played: 0
+            };
+        }
+
+        function updateGameState(result) {
+            gameState.history.unshift(result);
+            if (gameState.history.length > 100) gameState.history.pop();
+            gameState.total_played++;
+            gameState.earn += result.earn;
+
+            if (result.result) { // Win
+                gameState.win++;
+                gameState.streak++;
+                gameState.max_streak = Math.max(gameState.max_streak, gameState.streak);
+                if (gameState.lose_streak >= 2 && gameState.lose_streak_counts.hasOwnProperty(gameState.lose_streak)) {
+                    gameState.lose_streak_counts[gameState.lose_streak]++;
+                }
+                gameState.lose_streak = 0;
+            } else { // Loss
+                gameState.lose++;
+                gameState.streak = 0;
+                gameState.lose_streak++;
+            }
+        }
+        
+        function selectRoomFromLogic(logicId, data, data_10, data_100, history, auto_join_room) {
+            const sortedRooms = [...data.rooms].sort((a, b) => a.total_bet_amount - b.total_bet_amount);
+            
+            const logicMap = {
+                1: () => Math.floor(Math.random() * 8) + 1,
+                2: () => auto_join_room,
+                3: () => sortedRooms[sortedRooms.length - 1].room_id,
+                4: () => sortedRooms[0].room_id,
+                5: () => [sortedRooms[0].room_id, sortedRooms[sortedRooms.length - 1].room_id][Math.floor(Math.random() * 2)],
+                6: () => [sortedRooms[0].room_id, sortedRooms[1].room_id, sortedRooms[sortedRooms.length-2].room_id, sortedRooms[sortedRooms.length-1].room_id][Math.floor(Math.random() * 4)],
+                7: () => {
+                    try {
+                        const dem = Array.from({length: 8}, (_, i) => data_10[1].filter(r => r === i + 1).length);
+                        const x1 = dem.indexOf(Math.min(...dem)) + 1;
+                        const minKills = Math.min(...Object.values(data_100).map(Number));
+                        const minKillRooms = Object.keys(data_100).filter(k => Number(data_100[k]) === minKills);
+                        const x2 = Number(minKillRooms[Math.floor(Math.random() * minKillRooms.length)]);
+                        return [x1, x2][Math.floor(Math.random() * 2)];
+                    } catch { return logicMap[1](); }
+                },
+                8: () => (history.length === 0) ? 1 : (history[0].room_id % 8) + 1,
+                9: () => (history.length === 0) ? logicMap[1]() : (history[0].killed_room <= 4 ? Math.floor(Math.random() * 4) + 5 : Math.floor(Math.random() * 4) + 1),
+                10: () => {
+                    let scores = Object.fromEntries(Array.from({length: 8}, (_, i) => [i + 1, 0]));
+                    sortedRooms.forEach((room, i) => { scores[room.room_id] += (8 - i); });
+                    if (data_100) {
+                        const sortedByKills = Object.entries(data_100).sort(([, a], [, b]) => Number(a) - Number(b));
+                        sortedByKills.forEach(([roomId], i) => { scores[Number(roomId)] += (8 - i); });
+                    }
+                    if (data_10) {
+                        const recentKills = data_10[1];
+                        for (let i = 1; i <= 8; i++) {
+                            scores[i] += recentKills.includes(i) ? recentKills.indexOf(i) : 10;
+                        }
+                    }
+                    if (history.length > 0) scores[history[0].killed_room] -= 15;
+                    return Number(Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b));
+                },
+                11: () => logicMap[10](),
+                12: () => [sortedRooms[1].room_id, sortedRooms[2].room_id][Math.floor(Math.random() * 2)]
+            };
+
+            return (logicMap[logicId] || logicMap[1])();
+        }
+
+        function playRound(betAmount, statusBet) {
+            return new Promise(async (resolve, reject) => {
+                const config = getConfig();
+                const ws = new WebSocket(WEBSOCKET_URL);
+                const timeout = setTimeout(() => {
+                    ws.close();
+                    reject(new Error("WebSocket connection timed out after 30 seconds."));
+                }, 30000);
+
+                ws.onopen = async () => {
+                    const wsPayload = {
+                        msg_type: "handle_enter_game",
+                        asset_type: config.Coin,
+                        user_id: parseInt(config.user_id),
+                        user_secret_key: config.user_secretkey,
+                    };
+                    ws.send(JSON.stringify(wsPayload));
+                };
+
+                const data_10 = await apiService.get_recent_10(config.Coin);
+                const data_100 = await apiService.get_recent_100(config.Coin);
+                if (!data_10 || !data_100) addLog('warning', "Không lấy được dữ liệu lịch sử.");
+
+                ws.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.msg_type === 'notify_issue_stat') {
+                        if (statusBet) {
+                            const currentBet = data.user_data?.bet_amount || 0;
+                            if (currentBet < betAmount) {
+                                apiService.bet(Math.floor(Math.random() * 8) + 1, config.Coin, betAmount - currentBet);
+                            }
+                        }
+                        const roomToEnter = selectRoomFromLogic(config.int_logic, data, data_10, data_100, gameState.history, config.auto_join);
+                        apiService.enter_room(roomToEnter, config.Coin);
+                        
+                        updateStatsTable(data);
+                        updateStatusBar(`Phòng đã vào: ${data.user_data?.room_id || 'N/A'}`);
+                    } else if (data.msg_type === 'notify_result') {
+                        clearTimeout(timeout);
+                        ws.close();
+                        if (!data.bet_amount || data.bet_amount === 0) {
+                            addLog('info', `Kỳ ${data.issue_id} - Tạm nghỉ, không đặt cược.`);
+                            resolve(null);
+                            return;
+                        }
+
+                        const isWin = !data.is_killed;
+                        addLog(
+                            isWin ? 'win' : 'loss',
+                            `Kỳ ${data.issue_id} - Phòng diệt: ${data.killed_room} | KQ: ${isWin ? "Thắng" : "Thua"} | Cược ${data.bet_amount.toFixed(2)} -> Nhận ${data.award_amount.toFixed(2)}`
+                        );
+                        
+                        const result = {
+                            bet_amount: data.bet_amount,
+                            result: isWin,
+                            earn: data.award_amount - data.bet_amount,
+                            room_id: parseInt(data.room_id),
+                            killed_room: data.killed_room
+                        };
+                        resolve(result);
+                    }
+                };
+                
+                ws.onerror = (error) => {
+                    clearTimeout(timeout);
+                    reject(new Error("Lỗi WebSocket."));
+                };
+            });
+        }
+        
+        async function runBotLoop() {
+            addLog('success', "BOT ĐÃ BẮT ĐẦU!");
+            const config = getConfig();
+            addLog('info', `Tài khoản: ${config.user_id}, Coin: ${config.Coin}`);
+            addLog('info', `Logic: ${config.int_logic} - ${LOGIC_DESCRIPTIONS[config.int_logic]}`);
+            
+            while (!stopRequested) {
+                try {
+                    let betAmount = config.bet_amount0;
+                    if (gameState.history.length > 0 && !gameState.history[0].result) {
+                        betAmount = gameState.history[0].bet_amount * config.trap;
+                    }
+
+                    let statusBet = true;
+                    const cycle = config.delay1 + config.delay2;
+                    if (cycle > 0 && config.delay2 > 0) {
+                        const pos = gameState.total_played % cycle;
+                        if (pos >= config.delay1) {
+                            statusBet = false;
+                            addLog('info', `Đang trong thời gian tạm nghỉ, còn ${cycle - pos} ván nữa...`);
+                        }
+                    }
+                    
+                    const result = await playRound(betAmount, statusBet);
+
+                    if (stopRequested) break;
+
+                    if (result) {
+                        updateGameState(result);
+                    } else if (!statusBet) {
+                        // Vẫn tăng vòng chơi nếu đang trong thời gian nghỉ
+                        gameState.total_played++;
+                    }
+                    
+                    updateStatsPanel();
+                    
+                    // Chờ 5 giây trước vòng tiếp theo
+                    await new Promise(resolve => setTimeout(resolve, 5000));
+
+                } catch (e) {
+                    addLog('error', `Lỗi nghiêm trọng trong vòng lặp bot: ${e.message}`);
+                    addLog('warning', "Bot sẽ dừng lại do lỗi.");
+                    break; 
+                }
+            }
+            
+            // Bot finished loop
+            botRunning = false;
+            stopRequested = false;
+            toggleControls(true);
+            dom.startStopBtn.textContent = "Bắt Đầu Bot";
+            dom.startStopBtn.className = 'btn btn-primary';
+            dom.startStopBtn.disabled = false;
+            updateStatusBar("CTOOL Sẵn Sàng");
+            addLog('warning', "Bot đã dừng.");
+        }
+        
+        // ==================================================================================================
+        // SECTION 7: KHỞI TẠO VÀ SỰ KIỆN
+        // ==================================================================================================
+        function startStopBot() {
+            if (botRunning) {
+                addLog('warning', "Đang yêu cầu dừng bot...");
+                stopRequested = true;
+                dom.startStopBtn.textContent = "Đang Dừng...";
+                dom.startStopBtn.disabled = true;
+            } else {
+                const config = getConfig();
+                if (!config.user_id || !config.user_secretkey) {
+                    alert("Vui lòng điền User ID, Secret Key và lưu cấu hình trước khi bắt đầu.");
+                    return;
+                }
+                botRunning = true;
+                stopRequested = false;
+                gameState = resetGameState(); // Reset stats on new start
+                updateStatsPanel();
+                toggleControls(false);
+                dom.startStopBtn.textContent = "Dừng Bot";
+                dom.startStopBtn.className = 'btn btn-danger';
+                runBotLoop();
+            }
+        }
+        
+        function initializeApp() {
+            // Populate logic select
+            Object.entries(LOGIC_DESCRIPTIONS).forEach(([id, desc]) => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `${id}. ${desc}`;
+                dom.logicSelect.appendChild(option);
+            });
+
+            // Add event listeners
+            dom.saveConfigBtn.addEventListener('click', saveConfig);
+            dom.startStopBtn.addEventListener('click', startStopBot);
+            dom.logicSelect.addEventListener('change', onLogicChange);
+            
+            // Load config and init UI
+            loadConfig();
+            updateStatsPanel(); // Init stats panel with 0s
+            addLog('info', 'Chào mừng đến với CTOOL - Vua Thoát Hiểm Bot v4.0!');
+        }
+
+        initializeApp();
+    });
+    </script>
+</body>
+</html>
