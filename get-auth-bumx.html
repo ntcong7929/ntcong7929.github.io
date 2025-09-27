@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tách Authorization từ Curl</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#0ea5e9;--muted:#9aa4b2}
+    *{box-sizing:border-box}
+    body{font-family:Inter,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,#071023 0%,#0b1220 100%);color:#e6eef6;padding:24px}
+    .container{max-width:900px;margin:0 auto}
+    h1{margin:0 0 12px;font-size:20px}
+    p{margin:0 0 18px;color:var(--muted)}
+    textarea{width:100%;min-height:180px;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:inherit;font-family:monospace;font-size:13px}
+    .card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6);margin-bottom:14px}
+    .row{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);color:#021421;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .output{width:100%;padding:12px;border-radius:8px;border:1px dashed rgba(255,255,255,0.06);background:rgba(255,255,255,0.01);font-family:monospace}
+    .small{font-size:13px;color:var(--muted)}
+    .flex-space{display:flex;justify-content:space-between;align-items:center}
+    .hint{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;color:var(--muted);font-size:13px}
+    footer{margin-top:12px;color:var(--muted);font-size:13px}
+    @media (max-width:640px){.row{flex-direction:column;align-items:stretch}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tách giá trị <code>Authorization</code> từ curl</h1>
+    <p>Dán đoạn lệnh <code>curl</code> (hoặc headers JSON/raw) vào bên dưới. Công cụ sẽ tìm header <code>Authorization</code> và hiển thị giá trị để bạn copy nhanh.</p>
+
+    <div class="card">
+      <label class="small">Dán curl / headers:</label>
+      <textarea id="curlInput" placeholder="Ví dụ: curl 'https://...' -H 'Authorization: Bearer abc...'>"></textarea>
+      <div style="height:8px"></div>
+      <div class="row">
+        <button id="parseBtn" class="btn">Tách Authorization</button>
+        <button id="clearBtn" class="btn secondary">Xóa</button>
+        <div style="flex:1"></div>
+        <label class="small">Tự động</label>
+        <input id="autoParse" type="checkbox" checked style="transform:scale(1.2)">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="flex-space">
+        <div>
+          <div class="small">Kết quả (Authorization)</div>
+          <div id="authOutput" class="output" contenteditable="false">- Chưa có -</div>
+          <div id="rawInfo" class="small" style="margin-top:6px;color:var(--muted)"></div>
+        </div>
+        <div style="min-width:160px;text-align:right">
+          <button id="copyBtn" class="btn">Sao chép</button>
+          <div style="height:8px"></div>
+          <button id="useBtn" class="btn secondary">Sao chép và đưa vào clipboard (nâng cao)</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card hint">
+      <strong>Lưu ý:</strong>
+      <ul style="margin:8px 0 0 18px">
+        <li>Hỗ trợ nhiều dạng: <code>Authorization: VALUE</code>, <code>"Authorization": "VALUE"</code>, hoặc Bearer/token inline.</li>
+        <li>Nếu có nhiều header <code>Authorization</code>, công cụ sẽ lấy dòng đầu tiên tìm được.</li>
+        <li>Trang chạy hoàn toàn trên trình duyệt, không gửi dữ liệu ra server.</li>
+      </ul>
+    </div>
+
+    <footer>Muốn xuất thành file HTML tĩnh? Mở menu trình duyệt → Save as... để lưu trang này.</footer>
+  </div>
+
+  <script>
+    const curlInput = document.getElementById('curlInput');
+    const parseBtn = document.getElementById('parseBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const authOutput = document.getElementById('authOutput');
+    const copyBtn = document.getElementById('copyBtn');
+    const useBtn = document.getElementById('useBtn');
+    const autoParse = document.getElementById('autoParse');
+    const rawInfo = document.getElementById('rawInfo');
+
+    function extractAuthorization(text){
+      if(!text) return null;
+      // 1) tìm dạng -H 'Authorization: ...' hoặc -H "Authorization: ..."
+      const regexHeader = /-H\s*['\"]?\s*Authorization\s*[:|]\s*([^'\"\\\n\r]+)['\"]?/i;
+      let m = text.match(regexHeader);
+      if(m && m[1]) return m[1].trim();
+
+      // 2) tìm trong header dạng "Authorization": "..."
+      const jsonRegex = /\"Authorization\"\s*[:]\s*\"([^\"]+)\"/i;
+      m = text.match(jsonRegex);
+      if(m && m[1]) return m[1].trim();
+
+      // 3) tìm header dạng Authorization: ... trong bất cứ chỗ nào
+      const anyHeader = /Authorization\s*[:|]\s*([^\n\r;']+)/i;
+      m = text.match(anyHeader);
+      if(m && m[1]) return m[1].trim();
+
+      // 4) tìm Bearer token trực tiếp (Bearer ...)
+      const bearer = /Bearer\s+([A-Za-z0-9\-_.=+\/]+)/i;
+      m = text.match(bearer);
+      if(m && m[0]) return m[0].trim();
+
+      // 5) JWT-like (ba đoạn dot) tối thiểu
+      const jwt = /([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)/;
+      m = text.match(jwt);
+      if(m && m[1]) return m[1].trim();
+
+      return null;
+    }
+
+    function showResult(val){
+      if(val){
+        authOutput.textContent = val;
+        rawInfo.textContent = '';
+      } else {
+        authOutput.textContent = '- Không tìm thấy Authorization -';
+        rawInfo.textContent = 'Hãy chắc rằng bạn đã dán đúng nội dung curl hoặc header.';
+      }
+    }
+
+    parseBtn.addEventListener('click', ()=>{
+      const v = extractAuthorization(curlInput.value);
+      showResult(v);
+    });
+
+    clearBtn.addEventListener('click', ()=>{
+      curlInput.value = '';
+      authOutput.textContent = '- Chưa có -';
+      rawInfo.textContent = '';
+    });
+
+    copyBtn.addEventListener('click', async ()=>{
+      const text = authOutput.textContent;
+      if(!text || text.startsWith('-')) return alert('Không có giá trị để copy');
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Đã copy ✓';
+        setTimeout(()=>copyBtn.textContent = 'Sao chép',1200);
+      }catch(e){
+        alert('Trình duyệt không cho phép copy tự động. Hãy copy thủ công.');
+      }
+    });
+
+    useBtn.addEventListener('click', async ()=>{
+      const text = authOutput.textContent;
+      if(!text || text.startsWith('-')) return alert('Không có giá trị để copy');
+      try{
+        await navigator.clipboard.writeText(text);
+        useBtn.textContent = 'Đã copy vào clipboard ✓';
+        setTimeout(()=>useBtn.textContent = 'Sao chép và đưa vào clipboard (nâng cao)',1200);
+      }catch(e){
+        alert('Không thể copy tự động. Hãy copy thủ công.');
+      }
+    });
+
+    curlInput.addEventListener('input', ()=>{
+      if(autoParse.checked){
+        const v = extractAuthorization(curlInput.value);
+        showResult(v);
+      }
+    });
+
+    // Dán nhanh từ clipboard (Ctrl+V) khi textarea đang focus -> tự parse
+    curlInput.addEventListener('paste', ()=>{
+      setTimeout(()=>{ if(autoParse.checked){ const v = extractAuthorization(curlInput.value); showResult(v); } }, 60);
+    });
+
+    // Khi load, thử parse nếu có nội dung
+    window.addEventListener('load', ()=>{
+      const v = extractAuthorization(curlInput.value);
+      if(v) showResult(v);
+    });
+  </script>
+</body>
+</html>
