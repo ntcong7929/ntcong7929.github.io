@@ -3,120 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hướng Dẫn Chạy Tool BUMX trên Điện Thoại</title>
+    <title>Hướng Dẫn Chạy Tool BUMX trên Android - Termux</title>
     <style>
+        /* Biến CSS */
         :root {
-            --primary-color: #007bff; /* Xanh dương */
-            --secondary-color: #28a745; /* Xanh lá */
-            --background-color: #f8f9fa;
+            --primary-color: #0d6efd; /* Xanh dương đậm */
+            --secondary-color: #198754; /* Xanh lá đậm */
+            --danger-color: #dc3545; /* Đỏ */
+            --background-color: #e9ecef; /* Nền xám nhạt */
             --card-background: #ffffff;
-            --border-radius: 8px;
-            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
         }
 
+        /* Thiết lập chung */
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: var(--background-color);
             line-height: 1.6;
+            color: #333;
         }
 
         .container {
-            max-width: 900px;
-            margin: auto;
+            max-width: 95%; /* Tăng độ rộng cho màn hình nhỏ */
+            margin: 20px auto;
             background: var(--card-background);
-            padding: 30px;
+            padding: 25px 20px;
             border-radius: var(--border-radius);
             box-shadow: var(--box-shadow);
         }
 
+        /* Tiêu đề */
         h1 {
             color: var(--primary-color);
             text-align: center;
-            border-bottom: 3px solid var(--primary-color);
+            font-size: 1.8em;
+            margin-bottom: 25px;
             padding-bottom: 10px;
-            margin-bottom: 30px;
+            border-bottom: 4px solid var(--primary-color);
         }
 
         h2 {
             color: var(--secondary-color);
-            margin-top: 25px;
+            font-size: 1.4em;
+            margin-top: 30px;
             padding-bottom: 5px;
-            border-bottom: 1px solid #e9ecef;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 15px;
         }
-
-        .command-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .command-table th, .command-table td {
-            border: 1px solid #dee2e6;
-            padding: 12px;
-            text-align: left;
-        }
-
-        .command-table th {
-            background-color: var(--primary-color);
-            color: white;
+        
+        /* Cảnh báo */
+        .note {
+            background-color: #f8d7da; /* Nền hồng nhạt */
+            color: var(--danger-color); /* Chữ đỏ */
+            padding: 15px;
+            border: 2px solid var(--danger-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
             font-weight: bold;
-        }
-
-        .command-cell {
-            font-family: monospace;
-            background-color: #e9ecef;
-            border-radius: 4px;
-            padding: 2px 4px;
-            display: inline-block;
             font-size: 0.95em;
+            text-align: center;
         }
 
+        /* Bảng lệnh */
+        .command-section {
+            background-color: #f7f9fb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e8f0;
+        }
+
+        .command-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #ced4da;
+        }
+
+        .command-item:last-child {
+            border-bottom: none;
+        }
+
+        .command-details {
+            flex-grow: 1;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .command-description {
+            font-size: 0.9em;
+            color: #6c757d;
+            display: block;
+            margin-top: 2px;
+        }
+        
+        /* Ô lệnh */
+        .command-cell {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: #343a40; /* Nền đen */
+            color: #17e817; /* Chữ xanh lá neon */
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            overflow-x: auto; /* Cho phép cuộn ngang */
+            white-space: nowrap; /* Ngăn xuống dòng */
+            display: block; /* Chiếm hết chiều ngang để cuộn */
+            margin-bottom: 8px;
+        }
+
+        /* Nút Copy */
         .copy-button {
             background-color: var(--secondary-color);
             color: white;
             border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.2s ease-in-out;
             font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0; /* Ngăn nút bị co lại */
+            margin-left: 10px;
         }
 
         .copy-button:hover {
-            background-color: #1e7e34;
+            background-color: #157347;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
 
         .copy-button:active {
             transform: translateY(1px);
         }
 
-        .note {
-            background-color: #ffeeba;
-            color: #856404;
-            padding: 15px;
-            border: 1px solid #ffc107;
-            border-radius: var(--border-radius);
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-        
+        /* Thông báo thành công */
         .success-message {
             text-align: center;
             padding: 20px;
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
             border-radius: var(--border-radius);
             margin-top: 30px;
             font-size: 1.2em;
             font-weight: bold;
         }
-
+        
+        /* Danh sách */
+        ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        ul li {
+            margin-bottom: 5px;
+        }
+        
+        hr {
+            border: 0;
+            border-top: 1px solid #ced4da;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -124,113 +179,102 @@
     <div class="container">
         
         <div class="note">
-            ⚠️ **LƯU Ý QUAN TRỌNG:** Việc sử dụng công cụ này để quấy rối, đe dọa hoặc làm phiền người khác là **hành vi vi phạm pháp luật** và có thể bị xử lý. Hãy sử dụng có trách nhiệm!
+            ⚠️ **LƯU Ý CỰC KỲ QUAN TRỌNG:** Sử dụng công cụ này để quấy rối, đe dọa hoặc làm phiền người khác là **hành vi vi phạm pháp luật** và có thể bị xử lý. Bạn phải chịu trách nhiệm hoàn toàn cho hành động của mình.
         </div>
 
-        <h1>📲 Hướng Dẫn Chạy Tool BUMX Trên Điện Thoại Android</h1>
+        <h1>📲 Hướng Dẫn Chạy Tool BUMX <br> Trên Điện Thoại Android (Termux)</h1>
         
-        <p>Hướng dẫn này sử dụng ứng dụng **Termux** để cài đặt môi trường và chạy script **BUMX** trên điện thoại Android của bạn.</p>
+        <p>Hướng dẫn chi tiết từng bước để cài đặt môi trường và chạy script **BUMX** bằng ứng dụng **Termux** trên điện thoại Android của bạn.</p>
 
         <hr>
 
-        <h2>1. Cài Đặt Ứng Dụng Termux</h2>
-        <p>Termux là trình giả lập terminal cần thiết. Bạn nên tải ứng dụng từ các nguồn uy tín:</p>
+        <h2>1. Cài Đặt Ứng Dụng & Cấp Quyền</h2>
+        <p>Trước tiên, bạn cần chuẩn bị ứng dụng và cấp quyền truy cập bộ nhớ.</p>
         <ul>
-            <li>Tải Termux từ **F-Droid** hoặc **APKPure**.</li>
+            <li>Tải **Termux** từ **F-Droid** hoặc **APKPure** (Vì bản trên Google Play đã cũ).</li>
+            <li>Mở Termux và thực hiện lệnh đầu tiên để cấp quyền.</li>
         </ul>
 
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">1.1</span>
+                    <span class="command-cell" data-command="termux-setup-storage">termux-setup-storage</span>
+                    <span class="command-description">Cấp quyền truy cập vào bộ nhớ điện thoại. **Nhấn Allow** khi được hỏi.</span>
+                </div>
+                <button class="copy-button" data-command="termux-setup-storage">Copy</button>
+            </div>
+        </div>
+
         <hr>
 
-        <h2>2. Cài Đặt Môi Trường Ban Đầu</h2>
-        <p>Mở Termux và nhập các lệnh sau. Hãy bấm nút **Copy** để sao chép lệnh chính xác.</p>
+        <h2>2. Cài Đặt Môi Trường (Python & Thư Viện)</h2>
+        <p>Môi trường Python và các gói cần thiết phải được cài đặt trước khi chạy script.</p>
 
-        <table class="command-table">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Lệnh Cần Nhập</th>
-                    <th>Mô Tả</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td><span class="command-cell">termux-setup-storage</span></td>
-                    <td>Cấp quyền truy cập bộ nhớ điện thoại (chọn **Allow**).</td>
-                    <td><button class="copy-button" data-command="termux-setup-storage">Copy</button></td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td><span class="command-cell">pkg update && pkg upgrade</span></td>
-                    <td>Cập nhật và nâng cấp các gói cơ bản.</td>
-                    <td><button class="copy-button" data-command="pkg update && pkg upgrade">Copy</button></td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td><span class="command-cell">pkg install python</span></td>
-                    <td>Cài đặt ngôn ngữ lập trình **Python**.</td>
-                    <td><button class="copy-button" data-command="pkg install python">Copy</button></td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td><span class="command-cell">pip install requests</span></td>
-                    <td>Cài đặt thư viện **requests** cần thiết cho tool.</td>
-                    <td><button class="copy-button" data-command="pip install requests">Copy</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.1</span>
+                    <span class="command-cell" data-command="pkg update && pkg upgrade">pkg update && pkg upgrade</span>
+                    <span class="command-description">Cập nhật và nâng cấp các gói cơ bản của Termux.</span>
+                </div>
+                <button class="copy-button" data-command="pkg update && pkg upgrade">Copy</button>
+            </div>
+            
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.2</span>
+                    <span class="command-cell" data-command="pkg install python">pkg install python</span>
+                    <span class="command-description">Cài đặt ngôn ngữ lập trình **Python**.</span>
+                </div>
+                <button class="copy-button" data-command="pkg install python">Copy</button>
+            </div>
+            
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.3</span>
+                    <span class="command-cell" data-command="pip install requests">pip install requests</span>
+                    <span class="command-description">Cài đặt thư viện **requests** (cần thiết cho tool).</span>
+                </div>
+                <button class="copy-button" data-command="pip install requests">Copy</button>
+            </div>
+        </div>
 
         <hr>
 
         <h2>3. Tải Tool BUMX</h2>
-        <p>Sử dụng lệnh sau để tải file script <code>bumx.py</code> về máy:</p>
+        <p>Sử dụng công cụ <code>curl</code> để tải file script <code>bumx.py</code> trực tiếp từ kho lưu trữ.</p>
 
-        <table class="command-table">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Lệnh Cần Nhập</th>
-                    <th>Mô Tả</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>5</td>
-                    <td><span class="command-cell">curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py</span></td>
-                    <td>Tải script BUMX.py từ Github về.</td>
-                    <td><button class="copy-button" data-command="curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py">Copy</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">3.1</span>
+                    <span class="command-cell" data-command="curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py">curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py</span>
+                    <span class="command-description">Tải script BUMX.py về thư mục hiện tại.</span>
+                </div>
+                <button class="copy-button" data-command="curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py">Copy</button>
+            </div>
+        </div>
 
         <hr>
 
-        <h2>4. Chạy Tool BUMX</h2>
-        <p>Sau khi tải xong, dùng lệnh Python để chạy tool:</p>
+        <h2>4. Khởi Chạy Tool</h2>
+        <p>Khi mọi thứ đã sẵn sàng, bạn chỉ cần dùng lệnh Python để chạy script.</p>
 
-        <table class="command-table">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Lệnh Cần Nhập</th>
-                    <th>Mô Tả</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>6</td>
-                    <td><span class="command-cell">python bumx.py</span></td>
-                    <td>Khởi chạy công cụ và nhập số điện thoại cần "spam".</td>
-                    <td><button class="copy-button" data-command="python bumx.py">Copy</button></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">4.1</span>
+                    <span class="command-cell" data-command="python bumx.py">python bumx.py</span>
+                    <span class="command-description">Khởi chạy công cụ. Sau đó, nhập số điện thoại mục tiêu.</span>
+                </div>
+                <button class="copy-button" data-command="python bumx.py">Copy</button>
+            </div>
+        </div>
+
 
         <div class="success-message">
-            ✅ Chúc bạn thành công!
+            ✅ HOÀN THÀNH CÀI ĐẶT! Chúc bạn sử dụng thành công và có trách nhiệm.
         </div>
     </div>
 
@@ -240,38 +284,386 @@
             
             copyButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const command = this.getAttribute('data-command');
+                    // Lấy lệnh từ data-command của ô lệnh (command-cell) tương ứng
+                    const commandCell = this.closest('.command-item').querySelector('.command-cell');
+                    const command = commandCell.getAttribute('data-command');
                     
                     // Sử dụng API Clipboard hiện đại
                     if (navigator.clipboard) {
                         navigator.clipboard.writeText(command).then(() => {
                             const originalText = this.textContent;
-                            this.textContent = 'Đã Copy!';
-                            this.style.backgroundColor = '#1e7e34';
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#157347'; // Xanh lá đậm hơn
+                            
+                            // Đặt lại nút sau 1.5 giây
                             setTimeout(() => {
                                 this.textContent = originalText;
-                                this.style.backgroundColor = '#28a745';
+                                this.style.backgroundColor = 'var(--secondary-color)';
                             }, 1500);
                         }).catch(err => {
                             console.error('Không thể copy: ', err);
                             alert('Không thể tự động copy. Vui lòng sao chép thủ công: ' + command);
                         });
                     } else {
-                        // Phương pháp dự phòng cho các trình duyệt cũ hơn
+                        // Phương pháp dự phòng
                         const textArea = document.createElement("textarea");
                         textArea.value = command;
-                        textArea.style.position = "fixed";  // Ngăn cuộn
+                        textArea.style.position = "fixed";
+                        textArea.style.top = "0";
+                        textArea.style.left = "0";
+                        textArea.style.opacity = "0"; // Ẩn khỏi màn hình
                         document.body.appendChild(textArea);
                         textArea.focus();
                         textArea.select();
+                        
                         try {
                             document.execCommand('copy');
                             const originalText = this.textContent;
-                            this.textContent = 'Đã Copy!';
-                            this.style.backgroundColor = '#1e7e34';
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#157347';
                             setTimeout(() => {
                                 this.textContent = originalText;
-                                this.style.backgroundColor = '#28a745';
+                                this.style.backgroundColor = 'var(--secondary-color)';
+                            }, 1500);
+                        } catch (err) {
+                            console.error('Không thể copy: ', err);
+                            alert('Không thể tự động copy. Vui lòng sao chép thủ công: ' + command);
+                        }
+                        document.body.removeChild(textArea);
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+                </html>
+                <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng Dẫn Chạy Tool BUMX trên Android - Termux</title>
+    <style>
+        /* Biến CSS */
+        :root {
+            --primary-color: #0d6efd; /* Xanh dương đậm */
+            --secondary-color: #198754; /* Xanh lá đậm */
+            --danger-color: #dc3545; /* Đỏ */
+            --background-color: #e9ecef; /* Nền xám nhạt */
+            --card-background: #ffffff;
+            --border-radius: 12px;
+            --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Thiết lập chung */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 95%; /* Tăng độ rộng cho màn hình nhỏ */
+            margin: 20px auto;
+            background: var(--card-background);
+            padding: 25px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Tiêu đề */
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.4em;
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #dee2e6;
+            margin-bottom: 15px;
+        }
+        
+        /* Cảnh báo */
+        .note {
+            background-color: #f8d7da; /* Nền hồng nhạt */
+            color: var(--danger-color); /* Chữ đỏ */
+            padding: 15px;
+            border: 2px solid var(--danger-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 25px;
+            font-weight: bold;
+            font-size: 0.95em;
+            text-align: center;
+        }
+
+        /* Bảng lệnh */
+        .command-section {
+            background-color: #f7f9fb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e1e8f0;
+        }
+
+        .command-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #ced4da;
+        }
+
+        .command-item:last-child {
+            border-bottom: none;
+        }
+
+        .command-details {
+            flex-grow: 1;
+        }
+
+        .step-number {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .command-description {
+            font-size: 0.9em;
+            color: #6c757d;
+            display: block;
+            margin-top: 2px;
+        }
+        
+        /* Ô lệnh */
+        .command-cell {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background-color: #343a40; /* Nền đen */
+            color: #17e817; /* Chữ xanh lá neon */
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            overflow-x: auto; /* Cho phép cuộn ngang */
+            white-space: nowrap; /* Ngăn xuống dòng */
+            display: block; /* Chiếm hết chiều ngang để cuộn */
+            margin-bottom: 8px;
+        }
+
+        /* Nút Copy */
+        .copy-button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.9em;
+            font-weight: 600;
+            flex-shrink: 0; /* Ngăn nút bị co lại */
+            margin-left: 10px;
+        }
+
+        .copy-button:hover {
+            background-color: #157347;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Thông báo thành công */
+        .success-message {
+            text-align: center;
+            padding: 20px;
+            background-color: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+            border-radius: var(--border-radius);
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        /* Danh sách */
+        ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        ul li {
+            margin-bottom: 5px;
+        }
+        
+        hr {
+            border: 0;
+            border-top: 1px solid #ced4da;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="note">
+            ⚠️ **LƯU Ý CỰC KỲ QUAN TRỌNG:** Sử dụng công cụ này để quấy rối, đe dọa hoặc làm phiền người khác là **hành vi vi phạm pháp luật** và có thể bị xử lý. Bạn phải chịu trách nhiệm hoàn toàn cho hành động của mình.
+        </div>
+
+        <h1>📲 Hướng Dẫn Chạy Tool BUMX <br> Trên Điện Thoại Android (Termux)</h1>
+        
+        <p>Hướng dẫn chi tiết từng bước để cài đặt môi trường và chạy script **BUMX** bằng ứng dụng **Termux** trên điện thoại Android của bạn.</p>
+
+        <hr>
+
+        <h2>1. Cài Đặt Ứng Dụng & Cấp Quyền</h2>
+        <p>Trước tiên, bạn cần chuẩn bị ứng dụng và cấp quyền truy cập bộ nhớ.</p>
+        <ul>
+            <li>Tải **Termux** từ **F-Droid** hoặc **APKPure** (Vì bản trên Google Play đã cũ).</li>
+            <li>Mở Termux và thực hiện lệnh đầu tiên để cấp quyền.</li>
+        </ul>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">1.1</span>
+                    <span class="command-cell" data-command="termux-setup-storage">termux-setup-storage</span>
+                    <span class="command-description">Cấp quyền truy cập vào bộ nhớ điện thoại. **Nhấn Allow** khi được hỏi.</span>
+                </div>
+                <button class="copy-button" data-command="termux-setup-storage">Copy</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>2. Cài Đặt Môi Trường (Python & Thư Viện)</h2>
+        <p>Môi trường Python và các gói cần thiết phải được cài đặt trước khi chạy script.</p>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.1</span>
+                    <span class="command-cell" data-command="pkg update && pkg upgrade">pkg update && pkg upgrade</span>
+                    <span class="command-description">Cập nhật và nâng cấp các gói cơ bản của Termux.</span>
+                </div>
+                <button class="copy-button" data-command="pkg update && pkg upgrade">Copy</button>
+            </div>
+            
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.2</span>
+                    <span class="command-cell" data-command="pkg install python">pkg install python</span>
+                    <span class="command-description">Cài đặt ngôn ngữ lập trình **Python**.</span>
+                </div>
+                <button class="copy-button" data-command="pkg install python">Copy</button>
+            </div>
+            
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">2.3</span>
+                    <span class="command-cell" data-command="pip install requests">pip install requests</span>
+                    <span class="command-description">Cài đặt thư viện **requests** (cần thiết cho tool).</span>
+                </div>
+                <button class="copy-button" data-command="pip install requests">Copy</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>3. Tải Tool BUMX</h2>
+        <p>Sử dụng công cụ <code>curl</code> để tải file script <code>bumx.py</code> trực tiếp từ kho lưu trữ.</p>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">3.1</span>
+                    <span class="command-cell" data-command="curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py">curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py</span>
+                    <span class="command-description">Tải script BUMX.py về thư mục hiện tại.</span>
+                </div>
+                <button class="copy-button" data-command="curl -o bumx.py https://raw.githubusercontent.com/ntcong7929/ALL-TOOL/refs/heads/main/bumx.py">Copy</button>
+            </div>
+        </div>
+
+        <hr>
+
+        <h2>4. Khởi Chạy Tool</h2>
+        <p>Khi mọi thứ đã sẵn sàng, bạn chỉ cần dùng lệnh Python để chạy script.</p>
+
+        <div class="command-section">
+            <div class="command-item">
+                <div class="command-details">
+                    <span class="step-number">4.1</span>
+                    <span class="command-cell" data-command="python bumx.py">python bumx.py</span>
+                    <span class="command-description">Khởi chạy công cụ. Sau đó, nhập số điện thoại mục tiêu.</span>
+                </div>
+                <button class="copy-button" data-command="python bumx.py">Copy</button>
+            </div>
+        </div>
+
+
+        <div class="success-message">
+            ✅ HOÀN THÀNH CÀI ĐẶT! Chúc bạn sử dụng thành công và có trách nhiệm.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyButtons = document.querySelectorAll('.copy-button');
+            
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Lấy lệnh từ data-command của ô lệnh (command-cell) tương ứng
+                    const commandCell = this.closest('.command-item').querySelector('.command-cell');
+                    const command = commandCell.getAttribute('data-command');
+                    
+                    // Sử dụng API Clipboard hiện đại
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(command).then(() => {
+                            const originalText = this.textContent;
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#157347'; // Xanh lá đậm hơn
+                            
+                            // Đặt lại nút sau 1.5 giây
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.backgroundColor = 'var(--secondary-color)';
+                            }, 1500);
+                        }).catch(err => {
+                            console.error('Không thể copy: ', err);
+                            alert('Không thể tự động copy. Vui lòng sao chép thủ công: ' + command);
+                        });
+                    } else {
+                        // Phương pháp dự phòng
+                        const textArea = document.createElement("textarea");
+                        textArea.value = command;
+                        textArea.style.position = "fixed";
+                        textArea.style.top = "0";
+                        textArea.style.left = "0";
+                        textArea.style.opacity = "0"; // Ẩn khỏi màn hình
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        
+                        try {
+                            document.execCommand('copy');
+                            const originalText = this.textContent;
+                            this.textContent = '✅ Đã Copy!';
+                            this.style.backgroundColor = '#157347';
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.style.backgroundColor = 'var(--secondary-color)';
                             }, 1500);
                         } catch (err) {
                             console.error('Không thể copy: ', err);
