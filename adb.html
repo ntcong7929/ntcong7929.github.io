@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cài đặt ADB và gỡ lỗi thiết bị Android</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f8;
+      color: #222;
+      margin: 0;
+      padding: 0;
+      line-height: 1.6;
+    }
+    header {
+      background: #0078d7;
+      color: #fff;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    main {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1, h2 {
+      color: #0078d7;
+    }
+    pre {
+      background: #222;
+      color: #0f0;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    ol, ul {
+      margin-left: 1.5rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      color: #777;
+    }
+    a {
+      color: #0078d7;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .note {
+      background: #e7f3ff;
+      border-left: 4px solid #0078d7;
+      padding: 0.75rem 1rem;
+      margin: 1rem 0;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hướng dẫn cài đặt và sử dụng ADB</h1>
+  </header>
+
+  <main>
+    <h2>1. Giới thiệu</h2>
+    <p><strong>ADB (Android Debug Bridge)</strong> là công cụ cho phép bạn giao tiếp với thiết bị Android từ máy tính hoặc chính điện thoại Android khác — thường dùng để cài ứng dụng, gỡ lỗi hoặc điều khiển thiết bị qua dòng lệnh.</p>
+
+    <h2>2. Cài đặt ADB trên Windows</h2>
+    <ol>
+      <li>Truy cập trang tải chính thức của Google:  
+        <a href="https://developer.android.com/studio/releases/platform-tools" target="_blank">https://developer.android.com/studio/releases/platform-tools</a>
+      </li>
+      <li>Tải bản <strong>Platform Tools for Windows</strong>.</li>
+      <li>Giải nén file ZIP vào một thư mục, ví dụ:  
+        <code>C:\Android\platform-tools</code></li>
+    </ol>
+
+    <h2>3. Thêm ADB vào PATH</h2>
+    <ol>
+      <li>Mở menu Start → gõ <strong>“Environment Variables”</strong> → chọn “Edit the system environment variables”.</li>
+      <li>Chọn nút <strong>Environment Variables...</strong>.</li>
+      <li>Trong phần <strong>System variables</strong>, tìm biến <strong>Path</strong> → chọn <strong>Edit</strong>.</li>
+      <li>Nhấn <strong>New</strong> và dán đường dẫn tới thư mục ADB, ví dụ:
+        <pre>C:\Android\platform-tools</pre>
+      </li>
+      <li>Nhấn OK để lưu và đóng các cửa sổ.</li>
+    </ol>
+
+    <h2>4. Kiểm tra cài đặt</h2>
+    <p>Mở <strong>Command Prompt</strong> và gõ:</p>
+    <pre>adb version</pre>
+    <p>Nếu kết quả hiển thị như sau, nghĩa là bạn đã cài thành công:</p>
+    <pre>Android Debug Bridge version 1.0.xx</pre>
+
+    <h2>5. Kết nối thiết bị Android qua USB (Cho PC)</h2>
+    <ol>
+      <li>Bật <strong>Developer options</strong> và <strong>USB debugging</strong> trên điện thoại.</li>
+      <li>Kết nối điện thoại qua cáp USB.</li>
+      <li>Trong CMD, gõ:</li>
+    </ol>
+    <pre>adb devices</pre>
+    <p>Nếu thấy danh sách thiết bị hiển thị, bạn đã kết nối thành công!</p>
+
+    <h2>6. Gỡ lỗi thiết bị Android qua Wi-Fi (Cho các máy Android hoặc PC)</h2>
+    <div class="note">
+      ⚙️ Tính năng này cho phép bạn kết nối với thiết bị Android không cần dây cáp, chỉ cần chung mạng Wi-Fi.
+    </div>
+    <ol>
+      <li>Kết nối điện thoại với PC bằng cáp USB (lần đầu cần để bật chế độ gỡ lỗi không dây).</li>
+      <li>Gõ lệnh sau trong CMD:
+        <pre>adb tcpip 5555</pre>
+      </li>
+      <li>Rút cáp USB ra.</li>
+      <li>Trên điện thoại, xem địa chỉ IP nội mạng (ví dụ: 192.168.1.10).</li>
+      <li>Kết nối qua Wi-Fi bằng lệnh:
+        <pre>adb connect 192.168.1.10:5555</pre>
+      </li>
+      <li>Kiểm tra bằng:
+        <pre>adb devices</pre>
+      </li>
+      <li>Nếu thấy thiết bị hiển thị dạng <code>192.168.1.10:5555</code> → kết nối thành công.</li>
+    </ol>
+
+    <h2>7. Sử dụng ADB ngay trên Android với Termux</h2>
+    <div class="note">
+      📱 Nếu bạn không có máy tính, bạn vẫn có thể dùng ADB trực tiếp từ Android khác bằng <strong>Termux</strong>.
+    </div>
+
+    <h3>Bước 1: Cài Termux</h3>
+    <ul>
+      <li>Tải Termux từ trang chính thức F-Droid:  
+        <a href="https://f-droid.org/en/packages/com.termux/" target="_blank">https://f-droid.org/en/packages/com.termux/</a>
+      </li>
+    </ul>
+
+    <h3>Bước 2: Cài gói android-tools</h3>
+    <p>Mở Termux và gõ:</p>
+    <pre>
+pkg update -y
+pkg install android-tools -y
+    </pre>
+
+    <h3>Bước 3: Kiểm tra ADB</h3>
+    <pre>adb version</pre>
+
+    <h3>Bước 4: Chia đôi màn hình cho termux và Cài đặt</h3>
+    
+
+    <h3>Bước 5: Trong cài đặt, vào phần Cài đặt cho nhà phát triển và tìm đến phần Gỡ lỗi qua wifi</h3>
+
+    <h3>Bước 6: Nhấn vào Ghép nối thiết bị bằng mã ghép nối, khi này sẽ hiện lên địa chỉ IP,cổng và mã ghép nối</h3>
+
+    <h3>Bước 7: Nhấn vào Ghép nối thiết bị bằng mã ghép nối, khi này sẽ hiện lên địa chỉ IP,cổng và mã ghép nối</h3>
+    <pre>Ví dụ
+    Mã ghép nối: 175458
+    Địa chỉ IP và cổng:
+    192.168.1.2:40789
+    </pre>
+
+    <h3>Bước 8: ở termux hãy nhập lệnh bên dưới</h3>
+
+    <pre>adb pair IP:PORT MÃ</pre>
+    <pre>Với ví dụ trên thì hãy nhập:
+    adb pair 192.168.1.2:40789 175458
+Lưu ý cái này sẽ tùy máy nên cần nhập đúng với thông tin mà máy của bạn đưa
+    </pre>
+    
+
+
+
+    <div class="note">
+      💡 <strong>Mẹo:</strong> Nếu Termux báo lỗi quyền USB, bạn cần cấp quyền trong Android:  
+      <em>Settings → Developer options (Cài đặt cho nhà phát triển) → USB debugging (Gỡ lỗi qua usb) (on)</em> và đảm bảo thiết bị OTG được nhận diện.
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Hướng dẫn ADB | Made with 💙</p>
+  </footer>
+</body>
+</html>
