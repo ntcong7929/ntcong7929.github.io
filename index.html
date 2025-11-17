@@ -3,22 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CTOOL - Các công cụ chính thức</title>
+    <title>Hướng Dẫn Chạy CTOOL | Python 3.12</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
+        /* Gradient gốc: tím, xanh tím, xanh dương */
         .bg-gradient-hero {
             background-image: linear-gradient(to right, #6b21a8, #8b5cf6, #3b82f6);
         }
         .card-hover:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.15), 0 5px 5px -5px rgba(0, 0, 0, 0.05);
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -27,83 +28,219 @@
         .animate-fadeIn {
             animation: fadeIn 1s ease-out;
         }
+        .code-block {
+            background-color: #1f2937; /* Màu xám đậm */
+            color: #d1fa1e; /* Màu xanh neon */
+            padding-right: 4rem; /* Để chừa chỗ cho nút copy */
+        }
+        /* CSS cho nút Copy */
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #4b5563; /* Gray-600 */
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #374151; /* Gray-700 */
+        }
+        .code-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7p7k5Ua5x2z5w4pP1Bv1I5f8wz9P1+1+9z3p1V8y0+8r+p1F9bX5v5a7c1b+6p9k2y6n9g8jA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="bg-gray-100">
 
-    <header class="bg-gradient-hero text-white py-12 px-6 sm:px-12 rounded-b-2xl shadow-xl animate-fadeIn">
-        <div class="max-w-6xl mx-auto flex flex-col items-center text-center">
-            <h1 class="text-3xl sm:text-5xl font-bold mb-4">Chào mừng đến với CTOOL</h1>
-            <p class="text-lg sm:text-xl max-w-2xl mb-6">
-                Chọn công cụ bạn muốn tìm hiểu và cài đặt.
+    <header class="bg-gradient-hero text-white py-16 px-6 sm:px-12 rounded-b-3xl shadow-2xl animate-fadeIn">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
+            <p class="text-lg sm:text-xl font-medium mb-2 opacity-80">Hướng Dẫn Chính Thức từ CTOOL</p>
+            <h1 class="text-4xl sm:text-6xl font-extrabold mb-4 tracking-tight">🔥 HƯỚNG DẪN CHẠY CTOOL 🔥</h1>
+            <p class="text-lg sm:text-xl max-w-4xl mb-6 font-light opacity-90">
+                Tài liệu đầy đủ về cách thiết lập và chạy các công cụ của CTOOL trên đa nền tảng: Termux, Google Cloud Shell và Windows/PC.
             </p>
             <div class="space-x-4">
-                <a href="#tools" class="bg-white text-blue-600 font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-gray-200 transition-all duration-300">
-                    Xem các Tools
+                <a href="#guide-section" class="bg-white text-purple-700 font-bold py-3 px-8 rounded-full shadow-xl hover:bg-gray-200 transition-all duration-300 transform hover:scale-105">
+                    Xem Hướng Dẫn Ngay
                 </a>
             </div>
         </div>
     </header>
 
-    <section class="py-12 bg-white rounded-2xl shadow-lg -mt-10 mx-4 sm:mx-8 md:mx-12 lg:mx-20 animate-fadeIn" style="animation-delay: 0.2s;">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h2 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-6">Theo dõi chúng tôi</h2>
-            <div class="flex flex-wrap justify-center space-x-6">
+    <section class="py-12 bg-white rounded-2xl shadow-xl -mt-12 mx-4 sm:mx-8 md:mx-12 lg:mx-20 animate-fadeIn" style="animation-delay: 0.2s;">
+        <div class="max-w-6xl mx-auto text-center px-4">
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">⭐ Tác Giả & Cộng Đồng CTOOL </h2>
+            <p class="text-lg text-gray-600 mb-6">Xin chào, tôi là **Nguyễn Thành Công**, tác giả của CTOOL. Hãy theo dõi các kênh của tôi để nhận thông tin mới nhất.</p>
+            <div class="flex flex-wrap justify-center space-x-6 sm:space-x-8">
                 <a href="https://www.tiktok.com/@ctool7929" target="_blank" class="flex items-center space-x-2 text-gray-600 hover:text-black transform hover:scale-110 transition-transform duration-300 p-2">
-                    <i class="fab fa-tiktok text-4xl"></i>
-                    <span class="text-lg font-semibold">Kênh TikTok</span>
+                    <i class="fab fa-tiktok text-3xl"></i>
+                    <span class="text-md font-semibold hidden sm:inline">TikTok</span>
                 </a>
                 <a href="https://www.youtube.com/@CTOOL-NC" target="_blank" class="flex items-center space-x-2 text-gray-600 hover:text-red-600 transform hover:scale-110 transition-transform duration-300 p-2">
-                    <i class="fab fa-youtube text-4xl"></i>
-                    <span class="text-lg font-semibold">Kênh YouTube</span>
+                    <i class="fab fa-youtube text-3xl"></i>
+                    <span class="text-md font-semibold hidden sm:inline">YouTube</span>
                 </a>
                 <a href=https://zalo.me/g/qowvzu729 target="_blank" class="flex items-center space-x-2 text-gray-600 hover:text-blue-500 transform hover:scale-110 transition-transform duration-300 p-2">
-                    <i class="fas fa-comment-dots text-4xl"></i>
-                    <span class="text-lg font-semibold">Nhóm Zalo</span>
+                    <i class="fas fa-comment-dots text-3xl"></i>
+                    <span class="text-md font-semibold hidden sm:inline">Zalo Group</span>
                 </a>
                 <a href="https://t.me/+PByWNy8hDxYzYTRl" target="_blank" class="flex items-center space-x-2 text-gray-600 hover:text-blue-400 transform hover:scale-110 transition-transform duration-300 p-2">
-                    <i class="fab fa-telegram-plane text-4xl"></i>
-                    <span class="text-lg font-semibold">Nhóm Telegram</span>
+                    <i class="fab fa-telegram-plane text-3xl"></i>
+                    <span class="text-md font-semibold hidden sm:inline">Telegram</span>
                 </a>
             </div>
         </div>
     </section>
 
-    <section id="tools" class="py-16 px-4 sm:px-8">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-center text-2xl sm:text-3xl font-bold text-gray-800 mb-12">
-                Danh sách các Công cụ CTOOL
+    <section id="guide-section" class="py-20 px-4 sm:px-8">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-center text-3xl sm:text-4xl font-bold text-gray-800 mb-16">
+                ✅ Hướng Dẫn Chi Tiết Chạy CTOOL (Python 3.12)
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center card-hover transform transition-all duration-300">
-                    <i class="fas fa-globe text-6xl text-purple-600 mb-4"></i>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">CTOOL XWORLD</h3>
-                    <p class="text-gray-600 mb-6">Công cụ hỗ trợ cho nền tảng XWorld. Hướng dẫn chi tiết cách cài đặt trên mọi thiết bị.</p>
-                    <a href="https://ntcong7929.github.io/xworld.html" class="mt-auto bg-purple-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300">
-                        Nhấn vào đây
-                    </a>
-                </div>
 
-                <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center text-center card-hover transform transition-all duration-300">
-                    <i class="fas fa-bomb text-6xl text-red-600 mb-4"></i>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">CTOOL BUMX</h3>
-                    <p class="text-gray-600 mb-6">Công cụ hỗ trợ cho nền tảng BumX. Tìm hiểu cách thiết lập và sử dụng công cụ hiệu quả nhất.</p>
-                    <a href="https://ntcong7929.github.io/bumx.html" class="mt-auto bg-red-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-red-700 transition-all duration-300">
-                        Nhấn vào đây
-                    </a>
+            <div class="bg-white p-8 rounded-xl shadow-xl mb-12 card-hover transform transition-all duration-300 animate-fadeIn" style="animation-delay: 0.4s;">
+                <div class="flex items-center mb-6">
+                    <i class="fas fa-terminal text-4xl text-green-600 mr-4"></i>
+                    <h3 class="text-3xl font-extrabold text-gray-800">1. Termux (Android)</h3>
+                </div>
+                <p class="text-lg text-gray-600 mb-6">Môi trường terminal trên Android. Đảm bảo bạn đã cài đặt Python.</p>
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold text-gray-700 mb-4">Bước 1: Cài đặt Termux</h4>
+                    <p class="text-gray-700 mb-4">
+                        Tải Termux <a href="https://vi.softonic.com/download/termux/android/post-download/v/googleplay.2024.07.07?dt=internalDownload&_gl=1*16v1uqg*_gcl_au*MTA0NDAwMzUxMS4xNzYzMzY3NDc3" target="_blank" class="text-blue-600 hover:underline font-medium">**Tại đây**</a>, sau đó cài đặt nó.
+                    </p>
+                    
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 2: Cài đặt Python và các thư viện cần thiết</h4>
+                    <p class="text-gray-700 mb-2">Chạy lần lượt các lệnh sau để cập nhật hệ thống và cài đặt Python, Git cùng các thư viện cơ bản:</p>
+                    <p class="text-gray-700 mb-2">Lưu ý: Đôi khi nó sẽ hỏi bạn các câu hỏi (y/n) hãy luôn chọn y</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">pkg update && pkg upgrade -y
+pkg install python git -y
+pip install requests colorama rich pycurl</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 3: Tải CTOOL</h4>
+                    <p class="text-gray-700 mb-2">Nhập lệnh sau để tải tool:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">curl -o CTOOL.py https://raw.githubusercontent.com/C-Dev7929/Tools/refs/heads/main/main.py</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 4: Chạy CTOOL</h4>
+                    <p class="text-gray-700 mb-2">Nhập lệnh sau để chạy tool:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">python CTOOL.py</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
                 </div>
             </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-xl mb-12 card-hover transform transition-all duration-300 animate-fadeIn" style="animation-delay: 0.6s;">
+                <div class="flex items-center mb-6">
+                    <i class="fab fa-google text-4xl text-blue-600 mr-4"></i>
+                    <h3 class="text-3xl font-extrabold text-gray-800">2. Google Cloud Shell (Cloud/VPS)</h3>
+                </div>
+                <p class="text-lg text-gray-600 mb-6">
+                    Môi trường Linux trên Cloud. Bạn có thể truy cập <a href="https://shell.cloud.google.com/" target="_blank" class="text-blue-600 hover:underline font-medium">**Google Cloud Shell tại đây**</a>. Sử dụng `python3` và `pip3` để đảm bảo chạy phiên bản Python mới nhất.
+                </p>
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold text-gray-700 mb-4">Bước 1: Tải CTOOL</h4>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">curl -o CTOOL.py https://raw.githubusercontent.com/C-Dev7929/Tools/refs/heads/main/main.py</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 2: Cài đặt Thư viện và Chạy Tool</h4>
+                    <p class="text-gray-700 mb-2">Sử dụng `pip3` và `python3`:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">pip3 install requests colorama rich pycurl</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 3: Chạy nền (Quan trọng)</h4>
+                    <p class="text-gray-700 mb-2">Để Tool chạy liên tục khi bạn đóng cửa sổ Cloud Shell:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">nohup python3 CTOOL.py &</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-xl card-hover transform transition-all duration-300 animate-fadeIn" style="animation-delay: 0.8s;">
+                <div class="flex items-center mb-6">
+                    <i class="fab fa-windows text-4xl text-sky-600 mr-4"></i>
+                    <h3 class="text-3xl font-extrabold text-gray-800">3. Windows/PC</h3>
+                </div>
+                <p class="text-lg text-gray-600 mb-6">Thực hiện trên Command Prompt (CMD) hoặc PowerShell.</p>
+                <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                    <h4 class="text-xl font-bold text-gray-700 mb-4">Bước 1: Cài đặt Python 3.12</h4>
+                    <p class="text-gray-700 mb-2">Tải bản cài đặt mới nhất từ <a href="https://www.python.org/downloads/windows/" target="_blank" class="text-blue-600 hover:underline font-medium">python.org</a>.
+                    <br><span class="text-sm italic text-red-600 font-bold">Lưu ý quan trọng:</span> BẮT BUỘC TÍCH VÀO ô **"Add python.exe to PATH"** khi cài đặt.</p>
+
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 2: Tải tool</h4>
+                    <p class="text-gray-700 mb-2">Hãy vào thư mục download, sau đó click chuột vào thanh đường dẫn, sau đó nhập **cmd** và nhấn **enter**. CMD sẽ hiện ra và ở đây hãy nhập lệnh:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">curl -o CTOOL.py https://raw.githubusercontent.com/C-Dev7929/Tools/refs/heads/main/main.py</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 3: Cài các thư viện cần thiết</h4>
+                    <p class="text-gray-700 mb-2">Vẫn trong cửa sổ CMD, hãy nhập lệnh:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">pip install requests colorama rich pycurl</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                    
+                    <h4 class="text-xl font-bold text-gray-700 mt-6 mb-4">Bước 4: Chạy tool</h4>
+                    <p class="text-gray-700 mb-2">Nhập lệnh sau để chạy tool:</p>
+                    <div class="code-container">
+                        <pre class="code-block p-3 rounded-md text-sm overflow-x-auto">python CTOOL.py</pre>
+                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
-    <footer class="bg-gray-800 text-white py-6 mt-12 rounded-t-2xl">
-        <div class="max-w-6xl mx-auto text-center text-sm">
+    <footer class="bg-gray-800 text-white py-8 mt-16 rounded-t-2xl shadow-inner">
+        <div class="max-w-6xl mx-auto text-center text-sm px-4">
+            <p class="mb-2 text-lg font-medium">✨ CTOOL - Công Cụ Hỗ Trợ Chính Thức ✨</p>
             <p>&copy; 2025 CTOOL. All rights reserved.</p>
-            <p>Được thiết kế bởi Gemini - Google</p>
+            <p class="mt-1 text-gray-400">Được thiết kế bởi Gemini - Google. | Được duy trì bởi **Nguyễn Tấn Công (NTCONG7929)**</p>
         </div>
     </footer>
+
+    <script>
+        function copyCode(button) {
+            const preElement = button.previousElementSibling;
+            // Lấy nội dung văn bản từ thẻ <pre>
+            const codeText = preElement.textContent.trim(); 
+
+            // Sử dụng Clipboard API để copy văn bản
+            navigator.clipboard.writeText(codeText).then(() => {
+                // Thay đổi nội dung nút sau khi copy thành công
+                button.textContent = 'Đã Copy!';
+                setTimeout(() => {
+                    button.textContent = 'Copy';
+                }, 2000); // Đặt lại sau 2 giây
+            }).catch(err => {
+                console.error('Không thể copy: ', err);
+                button.textContent = 'Lỗi!';
+            });
+        }
+
+        // Fix: Thêm & vào lệnh nohup trong Cloud Shell nếu bị mất (đã thấy bạn chỉnh sửa trong input mới)
+        // Đảm bảo lệnh nohup python3 CTOOL.py & (có dấu & ở cuối)
+        // Tuy nhiên, vì lệnh nohup đã được sửa trong code HTML bạn cung cấp, tôi không cần phải thay đổi nội dung lệnh ở đây.
+
+    </script>
 
 </body>
 </html>
